@@ -4,7 +4,6 @@ import { useRouter } from 'next/router';
 import { briefingVideoConfig, BriefingVideoSection, BriefingVideoField } from '@/lib/propostas/form-briefing-video';
 import { LgpdConsent } from '@/components/LgpdConsent';
 
-const HERO_IMG = '/imagens-proposta-casamento/bg-section-01.jpg';
 const LOGO = '/assets/distinto_logo.svg';
 
 export default function BriefingVideoPage() {
@@ -356,9 +355,10 @@ export default function BriefingVideoPage() {
       </Head>
 
       <div className="orc-page">
-        <header className="orc-hero">
-          <div className="orc-hero-bg" style={{ backgroundImage: `url(${HERO_IMG})` }} />
+        <header className="orc-hero orc-hero--video">
+          <div className="orc-hero-bg orc-hero-bg--video" />
           <div className="orc-hero-overlay" />
+          <div className="orc-hero-grid" />
           <div className="orc-hero-content">
             <img src={LOGO} alt="Distinto" className="orc-logo" />
             <p className="orc-kicker">FILMMAKER & PRODUTORA</p>
@@ -470,10 +470,50 @@ const globalStyles = `
     background-size: cover;
     background-position: center;
   }
+  .orc-hero-bg--video {
+    background:
+      radial-gradient(ellipse 900px 500px at 50% 0%, rgba(197,168,128,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 700px 400px at 85% 30%, rgba(197,168,128,0.08) 0%, transparent 55%),
+      linear-gradient(180deg, #0e0e0e 0%, #0a0a0a 55%, #050505 100%);
+  }
+  .orc-hero-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.06;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.7) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.7) 1px, transparent 1px);
+    background-size: 40px 40px;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 30%, black 40%, transparent 75%);
+  }
+  .orc-hero--video::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(520px, 90vw);
+    height: min(520px, 90vw);
+    transform: translate(-50%, -45%);
+    border: 1px solid rgba(197,168,128,0.07);
+    border-radius: 50%;
+    pointer-events: none;
+  }
+  .orc-hero--video::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: min(380px, 68vw);
+    height: min(380px, 68vw);
+    transform: translate(-50%, -45%);
+    border: 1px solid rgba(197,168,128,0.09);
+    border-radius: 50%;
+    pointer-events: none;
+  }
   .orc-hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(10,10,10,0.45) 0%, rgba(10,10,10,0.65) 55%, #0a0a0a 100%);
+    background: linear-gradient(to bottom, rgba(10,10,10,0.10) 0%, rgba(10,10,10,0.55) 55%, #0a0a0a 100%);
   }
   .orc-hero-content {
     position: relative;
