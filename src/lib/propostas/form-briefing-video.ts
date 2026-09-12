@@ -170,7 +170,9 @@ export const briefingVideoConfig: BriefingVideoFormConfig = {
           type: 'radio',
           required: true,
           options: [
-            'Só gravação e edição',
+            'Só Gravação',
+            'Só Edição',
+            'Gravação + Edição',
             'Completo (roteiro + direção + maquiagem/cabelo se necessário)',
           ],
         },
