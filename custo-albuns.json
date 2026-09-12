@@ -1,0 +1,273 @@
+{
+  "fornecedor": "Full Color",
+  "categoria_principal": "Álbuns Encadernados",
+  "url_categoria": "https://fullcolor.pro/fotolivros/categoria/A/1089/albuns-encadernados",
+  "moeda": "BRL",
+  "albuns": [
+    {
+      "nome": "Álbum Mais",
+      "categoria": "Soft",
+      "preco_a_partir_de": 55.90,
+      "descricao": "Formato único, capa mole e excelente custo-benefício.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/A/1089/albuns-encadernados"
+    },
+    {
+      "nome": "SpeedBook",
+      "categoria": "Soft",
+      "preco_a_partir_de": 90.00,
+      "descricao": "Capa dura, disponível em diversos modelos.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/A/1089/albuns-encadernados"
+    },
+    {
+      "nome": "My Book",
+      "categoria": "Fotográficos",
+      "preco_a_partir_de": 90.00,
+      "descricao": "Capa com foto total, lâminas finas flexíveis de 300g/m² e abertura 180°.",
+      "paginas_inclusas_base": 20,
+      "capacidade_paginas": { "minimo": 20, "maximo": 120 },
+      "url": "https://fullcolor.pro/fotolivros/7704/my-book"
+    },
+    {
+      "nome": "Foto e Ímã",
+      "categoria": "Courvin",
+      "preco_a_partir_de": 97.00,
+      "descricao": "Álbum encadernado com ímã na capa, couro sintético e foto.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/A/1089/albuns-encadernados"
+    },
+    {
+      "nome": "Álbum Pocket",
+      "categoria": "Soft",
+      "preco_a_partir_de": 99.00,
+      "descricao": "Páginas em branco para colagem de fotos 10x15 ou 15x21.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/A/1089/albuns-encadernados"
+    },
+    {
+      "nome": "Fit",
+      "categoria": "Soft / Prime",
+      "preco_a_partir_de": 112.00,
+      "descricao": "Linha compacta encadernada.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/A/1089/albuns-encadernados"
+    },
+    {
+      "nome": "Foto Total",
+      "categoria": "Fotográficos",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Álbum encadernado com foto personalizada cobrindo toda a capa.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/B/1989/fotograficos"
+    },
+    {
+      "nome": "Foto Frontal",
+      "categoria": "Fotográficos",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Foto personalizada na capa frontal e couro sintético no verso e lombada.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/B/1989/fotograficos"
+    },
+    {
+      "nome": "Courvin",
+      "categoria": "Courvin",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Capa totalmente revestida em couro sintético, miolo rígido de 800g/m².",
+      "paginas_inclusas_base": 20,
+      "capacidade_paginas": { "minimo": 20, "maximo": 100 },
+      "url": "https://fullcolor.pro/fotolivros/5102/courvin"
+    },
+    {
+      "nome": "Courvin e Ímã",
+      "categoria": "Courvin",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Revestimento em couro sintético com fechamento magnético.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/B/1991/courvin"
+    },
+    {
+      "nome": "Acrílico Polido",
+      "categoria": "Prime",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Frente em acrílico polido com primeira lâmina visível e verso em courvim.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/B/1993/prime"
+    },
+    {
+      "nome": "Acrílico com Foto",
+      "categoria": "Prime",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Revestimento em courvim com janela frontal em acrílico.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/B/1993/prime"
+    },
+    {
+      "nome": "Wood Plus",
+      "categoria": "Prime",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Estrutura em madeira combinada com acabamento fotográfico.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/B/1993/prime"
+    },
+    {
+      "nome": "Crystal Book",
+      "categoria": "Prime",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Capa com efeito de cristal, brilho e profundidade.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/B/1993/prime"
+    },
+    {
+      "nome": "Madeira Total",
+      "categoria": "Prime",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Acabamento integral em madeira natural.",
+      "url": "https://fullcolor.pro/fotolivros/categoria/B/1993/prime"
+    },
+    {
+      "nome": "Madeira e Foto",
+      "categoria": "Prime",
+      "preco_a_partir_de": 153.00,
+      "descricao": "Parte frontal em madeira nobre com foto aplicada e verso em courvim.",
+      "paginas_inclusas_base": 20,
+      "capacidade_paginas": { "minimo": 20, "maximo": 100 },
+      "url": "https://fullcolor.pro/fotolivros/5286/madeira-e-foto"
+    },
+    {
+      "nome": "Álbum Pop",
+      "categoria": "Soft",
+      "preco_a_partir_de": null,
+      "descricao": "Álbum encadernado, leve com capa dura (calculado no configurador).",
+      "url": "https://fullcolor.pro/fotolivros/categoria/A/1089/albuns-encadernados"
+    },
+    {
+      "nome": "Álbum Box",
+      "categoria": "Soft",
+      "preco_a_partir_de": null,
+      "descricao": "Conjunto com caixa integrada (calculado no configurador).",
+      "url": "https://fullcolor.pro/fotolivros/categoria/A/1089/albuns-encadernados"
+    }
+  ],
+  "acabamentos_e_opcionais": {
+    "corte_lateral": {
+      "natural": {
+        "valor_adicional": 0.00,
+        "observacoes": "Acabamento padrão das lâminas."
+      },
+      "colorido": {
+        "valor_adicional": 30.00,
+        "tipo_cobranca": "fixo_por_album",
+        "cores": ["Preto", "Prata", "Ouro", "Holográfico"],
+        "requisito": "Exige seleção de Laminação UV (Fosco ou Brilho)."
+      }
+    },
+    "papeis_e_laminacao": {
+      "papel_fosco_lustre": {
+        "valor_adicional": 0.00,
+        "observacoes": "Papel fotográfico padrão incluso na base."
+      },
+      "papel_brilho_glossy": {
+        "valor_adicional": 0.00,
+        "observacoes": "Disponível nas linhas tradicionais sem custo extra."
+      },
+      "papel_linho_silk": {
+        "valor_adicional_por_lamina": 0.50,
+        "tipo_cobranca": "por_lamina",
+        "observacoes": "Textura linho/silk; não recebe laminação UV adicional."
+      },
+      "laminacao_uv": {
+        "opcoes": ["UV Fosco", "UV Brilho", "Nenhum"],
+        "observacoes": "Verniz UV obrigatório para aplicação de corte lateral colorido."
+      }
+    },
+    "guarda_interna": {
+      "sem_guarda": {
+        "valor_adicional": 0.00,
+        "observacoes": "Primeira e última página são fotos impressas com narrativa contínua."
+      },
+      "com_guarda": {
+        "valor_adicional": 50.00,
+        "tipo_cobranca": "fixo_por_album",
+        "cores_disponiveis": ["Branco", "Preto"],
+        "observacoes": "Folhas de abertura e fechamento estruturadas."
+      }
+    },
+    "mini_replicas": {
+      "descricao": "Réplica proporcional com diagramação idêntica ao álbum principal (ex.: 30x60 reduzido para 15x30).",
+      "opcoes": [
+        { "quantidade": 1, "valor_adicional": 119.90 },
+        { "quantidade": 2, "valor_adicional": 239.80 },
+        { "quantidade": 3, "valor_adicional": 359.70 }
+      ]
+    },
+    "laminas_adicionais": {
+      "pacote_base_paginas": 20,
+      "pacote_base_laminas": 10,
+      "regra": "Cada lâmina extra equivale a 2 páginas. Valor unitário depende da gramatura (300g flexível ou 800g rígido)."
+    },
+    "personalizacao_capa": {
+      "opcoes": ["Gravação a laser", "Bordado"],
+      "modelos_compativeis": ["Courvin", "Classe A"]
+    }
+  },
+  "maletas_estojos_e_caixas": {
+    "url_categoria": "https://fullcolor.pro/fotolivros/categoria/B/1996/estojos",
+    "itens_com_valor_base": [
+      {
+        "nome": "Caixa Box Pen Drive - Foto Total",
+        "preco_a_partir_de": 96.00,
+        "descricao": "Caixa personalizada para 50 fotos + pen drive.",
+        "url": "https://fullcolor.pro/fotolivros/7547/caixa-box-pen-drive-foto-total"
+      },
+      {
+        "nome": "Caixa Box Pen Drive - Courvin",
+        "preco_a_partir_de": 96.00,
+        "descricao": "Caixa em couro sintético para 50 fotos 10x15 + pen drive.",
+        "url": "https://fullcolor.pro/fotolivros/categoria/B/1996/estojos"
+      },
+      {
+        "nome": "Classe A - Caixa Ímã",
+        "preco_a_partir_de": 182.60,
+        "descricao": "Caixa em courvim com fechamento magnético e gravação a laser.",
+        "url": "https://fullcolor.pro/fotolivros/categoria/B/1996/estojos"
+      },
+      {
+        "nome": "Caixa Madeira e Foto",
+        "preco_a_partir_de": 153.00,
+        "descricao": "Caixa com estrutura de madeira e foto aplicada na tampa.",
+        "url": "https://fullcolor.pro/fotolivros/categoria/B/1996/estojos"
+      }
+    ],
+    "maletas_e_estojos_sob_medida": {
+      "modelos_disponiveis": [
+        "Maleta Courvin",
+        "Maleta Foto",
+        "Maleta Dupla Courvin",
+        "Maleta Dupla Foto",
+        "Maleta 2 Fotos",
+        "Estojo Courvin",
+        "Estojo Foto",
+        "Estojo 2 Fotos",
+        "Crystal Box (Acrílico 3mm)",
+        "Aba Cristal Plus",
+        "Caixa Foto Laço",
+        "Caixa Memórias - Plus",
+        "Photo Frame - Box"
+      ],
+      "criterios_de_preco": [
+        "Formato e tamanho do álbum (ex.: 20x20 fechado / 20x40 aberto, 20x30 fechado / 20x60 aberto, 30x30 fechado / 30x60 aberto).",
+        "Profundidade do berço/lombada interna (dimensionada para comportar de 20 até 80 páginas)."
+      ],
+      "url_exemplo": "https://fullcolor.pro/fotolivros/5501/maleta-courvin"
+    }
+  },
+  "servicos_de_modificacao": {
+    "url_categoria": "https://fullcolor.pro/fotolivros/categoria/B/2128/modificacao",
+    "itens": [
+      {
+        "servico": "Modificação - Capa",
+        "preco_a_partir_de": 140.00,
+        "descricao": "Substituição apenas da capa de álbum já confeccionado."
+      },
+      {
+        "servico": "Modificação - Lâminas",
+        "preco_a_partir_de": 140.00,
+        "descricao": "Substituição de 1 a 3 lâminas sequenciais."
+      },
+      {
+        "servico": "Modificação - Capa e Lâminas",
+        "preco_a_partir_de": 140.00,
+        "descricao": "Substituição conjunta da capa e lâminas."
+      }
+    ]
+  }
+}

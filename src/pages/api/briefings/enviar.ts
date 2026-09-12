@@ -93,7 +93,25 @@ function normalizeDataCasamento(v: any): string | null {
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'GET') {
     try {
-      const rows = await query('SELECT * FROM briefings_resposta ORDER BY criado_em DESC');
+      const tipo = String(req.query.tipo || 'casamento').trim();
+      let sql = 'SELECT * FROM briefings_resposta';
+      const params: any[] = [];
+      if (tipo && tipo !== 'todos' && tipo !== 'all') {
+        // Filtra por tipo quando a coluna existe; fallback silencioso se ainda não migrado
+        try {
+          sql += ' WHERE tipo = $1';
+          params.push(tipo);
+        } catch {}
+      }
+      sql += ' ORDER BY criado_em DESC';
+      let rows: any[];
+      try {
+        rows = await query(sql, params);
+      } catch (e: any) {
+        if (/Unknown column.*tipo/i.test(e.message)) {
+          rows = await query('SELECT * FROM briefings_resposta ORDER BY criado_em DESC');
+        } else throw e;
+      }
       const briefings = rows.map((r: any) => {
         let dados: any = {};
         try {
@@ -134,11 +152,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       const id = generateId();
       const dadosJsonStr = JSON.stringify(sanitizedPayload);
-
-      await query(
-        'INSERT INTO briefings_resposta (id, cliente_nome, data_casamento, dados_json, status) VALUES ($1, $2, $3, $4, $5)',
-        [id, clienteNome, dataCasamento, dadosJsonStr, 'novo']
-      );
+      // Tenta salvar com tipo='casamento' se coluna já existe (compatível com filtro existente)
+      try {
+        await query(
+          'INSERT INTO briefings_resposta (id, cliente_nome, data_casamento, dados_json, tipo, status) VALUES ($1, $2, $3, $4, $5, $6)',
+          [id, clienteNome, dataCasamento, dadosJsonStr, 'casamento', 'novo']
+        );
+      } catch (e: any) {
+        if (/Unknown column.*tipo/i.test(e.message)) {
+          await query(
+            'INSERT INTO briefings_resposta (id, cliente_nome, data_casamento, dados_json, status) VALUES ($1, $2, $3, $4, $5)',
+            [id, clienteNome, dataCasamento, dadosJsonStr, 'novo']
+          );
+        } else throw e;
+      }
 
       console.log('[briefing] salvo', { id, clienteNome, dataCasamento });
 

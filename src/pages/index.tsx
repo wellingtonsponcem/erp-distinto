@@ -13,6 +13,7 @@ import { OrcamentosAlbumView } from '@/components/OrcamentosAlbumView';
 import { OrcamentosB2BView } from '@/components/OrcamentosB2BView';
 import { ContratosView } from '@/components/ContratosView';
 import { ModelosContratoView } from '@/components/ModelosContratoView';
+import { BriefingsVideoView } from '@/components/BriefingsVideoView';
 
 export default function Home() {
   const [user, setUser] = useState<any>(null);
@@ -162,6 +163,8 @@ export default function Home() {
         return <OrcamentosB2BView />;
       case 'solicitacoes':
         return <OrcamentosView />;
+      case 'briefings_video':
+        return <BriefingsVideoView />;
       case 'contratos':
         return <ContratosView />;
       case 'modelos_contrato':

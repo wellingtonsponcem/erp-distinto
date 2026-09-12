@@ -263,7 +263,7 @@ export async function initTables() {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
 
-    // 12. Briefings Respostas (Respostas do Formulario Publico de Briefing Logistico)
+    // 12. Briefings Respostas (Respostas do Formulario Publico de Briefing Logistico + Vídeo Produtora)
     await p.query(`
       CREATE TABLE IF NOT EXISTS briefings_resposta (
         id VARCHAR(64) PRIMARY KEY,
@@ -274,6 +274,14 @@ export async function initTables() {
         criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
     `);
+    // Migrações para briefing de vídeo (produtora / filmmaker) — reutiliza mesma tabela com filtro por tipo
+    try { await p.query(`ALTER TABLE briefings_resposta ADD COLUMN tipo VARCHAR(32) DEFAULT 'casamento';`); } catch (e) {}
+    try { await p.query(`ALTER TABLE briefings_resposta ADD COLUMN empresa VARCHAR(255);`); } catch (e) {}
+    try { await p.query(`ALTER TABLE briefings_resposta ADD COLUMN cliente_id VARCHAR(64);`); } catch (e) {}
+    try { await p.query(`ALTER TABLE briefings_resposta ADD INDEX idx_briefings_tipo (tipo);`); } catch (e) {}
+    try { await p.query(`ALTER TABLE briefings_resposta ADD INDEX idx_briefings_empresa (empresa);`); } catch (e) {}
+    // Backfill: registros antigos sem tipo ficam como 'casamento'
+    try { await p.query(`UPDATE briefings_resposta SET tipo='casamento' WHERE tipo IS NULL OR tipo='';`); } catch (e) {}
 
     // 13. Orcamentos B2B (Orcamentos simples para clientes existentes)
     await p.query(`
