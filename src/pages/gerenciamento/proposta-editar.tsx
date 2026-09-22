@@ -71,8 +71,19 @@ export const getServerSideProps: GetServerSideProps<EditarPageProps> = async (co
     const id = String(context.query?.id ?? '');
     const isModal = (context.query?.layout ?? '') === 'modal';
 
+    const propostaRaw = id ? await queryOne(`SELECT * FROM propostas WHERE id = $1 LIMIT 1`, [id]).catch(() => null) : null;
+    // Site proposals: viewer simples igual a orçamentos — redireciona para /p/slug (evita wizard complexo que dá 500)
+    if (propostaRaw && String(propostaRaw.tipo) === 'site' && propostaRaw.slug) {
+      return {
+        redirect: {
+          destination: `/p/${propostaRaw.slug}`,
+          permanent: false,
+        },
+      } as any;
+    }
+
     const [proposta, clientes, oportunidades, fornecedores, servicos] = await Promise.all([
-      id ? queryOne(`SELECT * FROM propostas WHERE id = $1 LIMIT 1`, [id]).catch(() => null) : null,
+      propostaRaw ? Promise.resolve(propostaRaw) : (id ? queryOne(`SELECT * FROM propostas WHERE id = $1 LIMIT 1`, [id]).catch(() => null) : null),
       query(`SELECT id, nome FROM clientes ORDER BY nome ASC`).catch(() => []),
       query(`SELECT id, nome, cliente_id FROM oportunidades ORDER BY previsao ASC`).catch(() => []),
       query(`SELECT id, nome, categoria FROM fornecedores ORDER BY nome ASC`).catch(() => []),
