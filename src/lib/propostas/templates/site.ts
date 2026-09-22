@@ -147,8 +147,8 @@ export function render(ctx: SlideCtx): string {
           <svg width="16" height="16" style="width:16px;height:16px" class="w-4 h-4 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
           Salvar em PDF
         </button>
-        <a class="no-print hidden sm:inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 border border-white text-[11px] sm:text-xs font-bold text-black bg-white hover:bg-slate-200 transition" href="#investimento">Aprovar Proposta
-          <svg width="12" height="12" style="width:12px;height:12px" class="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1 sm:ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        <a class="no-print hidden lg:inline-flex items-center px-4 py-2 border border-white text-xs font-bold text-black bg-white hover:bg-slate-200 transition" href="#investimento">Aprovar Proposta
+          <svg width="14" height="14" style="width:14px;height:14px" class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </a>
       </div>
     </div>
