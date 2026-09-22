@@ -80,7 +80,7 @@ async function gerarMensagemWhatsApp(
           contents: [{ parts: [{ text: prompt }] }],
           generationConfig: { temperature: 0.3, maxOutputTokens: 8192 },
         }),
-        signal: AbortSignal.timeout(90000),
+        signal: AbortSignal.timeout(2500),
       }
     );
     if (!res.ok) return fallback;
@@ -436,136 +436,144 @@ export default function PublicProposalPage(props: PageProps) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const { slug } = context.params || {};
-  if (!slug || typeof slug !== 'string') return { notFound: true };
-
-  const proposta = await queryOne('SELECT * FROM propostas WHERE slug = $1 LIMIT 1', [slug]);
-  if (!proposta) return { notFound: true };
-
-  let dados: any = {};
   try {
-    dados = typeof proposta.dados_json === 'string' ? JSON.parse(proposta.dados_json || '{}') : (proposta.dados_json || {});
-  } catch (e) {
-    dados = {};
-  }
+    const { slug } = context.params || {};
+    if (!slug || typeof slug !== 'string') return { notFound: true };
 
-  const cfg = await queryOne('SELECT * FROM configuracao_empresa LIMIT 1');
-  const empresa = {
-    nome_empresa: cfg?.nome_empresa || 'ERP Distinto',
-    telefone: '27999998888',
-    gemini_api_key: process.env.GEMINI_API_KEY || '',
-  };
+    const proposta = await queryOne('SELECT * FROM propostas WHERE slug = ? LIMIT 1', [slug]);
+    if (!proposta) return { notFound: true };
 
-  const tipo = proposta.tipo || 'casamento';
-  const titulo = proposta.titulo || 'Proposta Comercial';
-  const cliente = proposta.cliente_nome || dados.cliente_nome || 'Cliente';
+    let dados: any = {};
+    try {
+      dados = typeof proposta.dados_json === 'string' ? JSON.parse(proposta.dados_json || '{}') : (proposta.dados_json || {});
+    } catch (e) {
+      dados = {};
+    }
 
-  const criadoEm = proposta.criado_em ? new Date(proposta.criado_em) : new Date();
-  const mesNum = String(criadoEm.getMonth() + 1);
-  const mesNome = MESES_PT[mesNum] || 'JANEIRO';
-  const ano = String(criadoEm.getFullYear());
-
-  const categoriaProjeto = (dados.categoria_projeto || (tipo === 'site' ? 'Website Institucional' : 'Wedding')).toUpperCase();
-  const frameCliente = mbUpper(cliente);
-
-  let casamento: CasamentoProps | undefined = undefined;
-
-  if (tipo === 'casamento') {
-    const nomeNoivo = String(dados.nome_noivo || '');
-    const nomeNoiva = String(dados.nome_noiva || '');
-    const mNomeCasal = (nomeNoiva && nomeNoivo) ? `${nomeNoiva} & ${nomeNoivo}` : cliente;
-
-    const servicosRows = await query(`SELECT id, nome, preco_venda, tipo FROM servicos WHERE categoria='wedding' AND ativo=1`);
-    const servicosWedding = buildServicosWedding(servicosRows);
-
-    const planosRows = await query(`SELECT * FROM servicos WHERE categoria='wedding' AND tipo='plano' AND ativo=1 ORDER BY preco_venda DESC`);
-    const planosWedding = buildPlanosWedding(planosRows, dados);
-    const cond = buildCondicoesCasamento(dados);
-
-    // Valores padrão dos planos
-    const pHeritage = planosWedding.find((p) => p.id === 'heritage')?.preco_venda || 12000;
-    const pCinematic = planosWedding.find((p) => p.id === 'cinematic')?.preco_venda || 8500;
-    const pEssencial = planosWedding.find((p) => p.id === 'essencial')?.preco_venda || 5500;
-
-    casamento = {
-      mPHeritage: pHeritage,
-      mPCinematic: pCinematic,
-      mPEssencial: pEssencial,
-      mPBoudoir: Number(dados.valor_boudoir || 500),
-      mPPrewedding: Number(dados.valor_prewedding || 1100),
-      valorBoudoir: Number(dados.valor_boudoir || 500),
-      valorPrewedding: Number(dados.valor_prewedding || 1100),
-      condHC: cond.condHC,
-      condE: cond.condE,
-      mNomeCasal,
-      servicosWedding,
-      planosWedding,
+    const cfg = await queryOne('SELECT * FROM configuracao_empresa LIMIT 1');
+    const empresa = {
+      nome_empresa: cfg?.nome_empresa || 'ERP Distinto',
+      telefone: '27999998888',
+      gemini_api_key: process.env.GEMINI_API_KEY || '',
     };
-  }
 
-  const mensagemWA = await gerarMensagemWhatsApp(
-    String(dados.nome_noivo || ''),
-    String(dados.nome_noiva || ''),
-    cliente,
-    empresa.gemini_api_key
-  );
+    const tipo = proposta.tipo || 'casamento';
+    const titulo = proposta.titulo || 'Proposta Comercial';
+    const cliente = proposta.cliente_nome || dados.cliente_nome || 'Cliente';
 
-  if (dados.servicos && Array.isArray(dados.servicos)) {
-    const ids = (dados.servicos || []).map((s: any) => s && s.id).filter(Boolean);
-    if (ids.length > 0) {
-      const placeholders = ids.map(() => '?').join(',');
-      const catRows = await query(`SELECT id, preco_venda, preco_venda_pontual FROM servicos WHERE id IN (${placeholders})`, ids);
-      const cat: Record<string, any> = {};
-      for (const r of catRows) cat[r.id] = r;
-      dados.servicos = (dados.servicos || []).map((sv: any) =>
-        cat[sv.id] ? { ...sv, preco_venda: cat[sv.id].preco_venda, preco_venda_pontual: cat[sv.id].preco_venda_pontual } : sv
+    const criadoEm = proposta.criado_em ? new Date(proposta.criado_em) : new Date();
+    const mesNum = String(criadoEm.getMonth() + 1);
+    const mesNome = MESES_PT[mesNum] || 'JANEIRO';
+    const ano = String(criadoEm.getFullYear());
+
+    const categoriaProjeto = (dados.categoria_projeto || (tipo === 'site' ? 'Website Institucional' : 'Wedding')).toUpperCase();
+    const frameCliente = mbUpper(cliente);
+
+    let casamento: CasamentoProps | undefined = undefined;
+
+    if (tipo === 'casamento') {
+      const nomeNoivo = String(dados.nome_noivo || '');
+      const nomeNoiva = String(dados.nome_noiva || '');
+      const mNomeCasal = (nomeNoiva && nomeNoivo) ? `${nomeNoiva} & ${nomeNoivo}` : cliente;
+
+      const servicosRows = await query(`SELECT id, nome, preco_venda, tipo FROM servicos WHERE categoria='wedding' AND ativo=1`);
+      const servicosWedding = buildServicosWedding(servicosRows);
+
+      const planosRows = await query(`SELECT * FROM servicos WHERE categoria='wedding' AND tipo='plano' AND ativo=1 ORDER BY preco_venda DESC`);
+      const planosWedding = buildPlanosWedding(planosRows, dados);
+      const cond = buildCondicoesCasamento(dados);
+
+      // Valores padrão dos planos
+      const pHeritage = planosWedding.find((p) => p.id === 'heritage')?.preco_venda || 12000;
+      const pCinematic = planosWedding.find((p) => p.id === 'cinematic')?.preco_venda || 8500;
+      const pEssencial = planosWedding.find((p) => p.id === 'essencial')?.preco_venda || 5500;
+
+      casamento = {
+        mPHeritage: pHeritage,
+        mPCinematic: pCinematic,
+        mPEssencial: pEssencial,
+        mPBoudoir: Number(dados.valor_boudoir || 500),
+        mPPrewedding: Number(dados.valor_prewedding || 1100),
+        valorBoudoir: Number(dados.valor_boudoir || 500),
+        valorPrewedding: Number(dados.valor_prewedding || 1100),
+        condHC: cond.condHC,
+        condE: cond.condE,
+        mNomeCasal,
+        servicosWedding,
+        planosWedding,
+      };
+    }
+
+    let mensagemWA = '';
+    if (tipo === 'casamento' && empresa.gemini_api_key) {
+      mensagemWA = await gerarMensagemWhatsApp(
+        String(dados.nome_noivo || ''),
+        String(dados.nome_noiva || ''),
+        cliente,
+        empresa.gemini_api_key
       );
     }
-  }
 
-  const slideCtx: SlideCtx = {
-    proposta,
-    dados,
-    tipo,
-    cliente,
-    mesNome,
-    ano,
-    categoriaProjeto,
-    empresa,
-    slug,
-    servicosWedding: casamento?.servicosWedding,
-    planosWedding: casamento?.planosWedding,
-    condHC: casamento?.condHC,
-    condE: casamento?.condE,
-    mensagemWA,
-  };
+    if (dados.servicos && Array.isArray(dados.servicos)) {
+      const ids = (dados.servicos || []).map((s: any) => s && s.id).filter(Boolean);
+      if (ids.length > 0) {
+        const placeholders = ids.map(() => '?').join(',');
+        const catRows = await query(`SELECT id, preco_venda, preco_venda_pontual FROM servicos WHERE id IN (${placeholders})`, ids);
+        const cat: Record<string, any> = {};
+        for (const r of catRows) cat[r.id] = r;
+        dados.servicos = (dados.servicos || []).map((sv: any) =>
+          cat[sv.id] ? { ...sv, preco_venda: cat[sv.id].preco_venda, preco_venda_pontual: cat[sv.id].preco_venda_pontual } : sv
+        );
+      }
+    }
 
-  const renderMap: Record<string, (c: SlideCtx) => string> = {
-    casamento: renderCasamento,
-    marketing: renderMarketing,
-    filmmaker: renderFilmmaker,
-    '15anos': renderQuinze,
-    site: renderSite,
-  };
-  const renderFn = renderMap[tipo];
-  if (!renderFn) return { notFound: true };
-
-  const slides = renderFn(slideCtx);
-
-  return {
-    props: {
-      slug,
+    const slideCtx: SlideCtx = {
+      proposta,
+      dados,
       tipo,
-      titulo,
       cliente,
-      slides,
-      categoriaProjeto,
       mesNome,
       ano,
-      frameCliente,
-      telefone: String(empresa.telefone || ''),
-      dados,
-      casamento: casamento || null,
-    } as any,
-  };
+      categoriaProjeto,
+      empresa,
+      slug,
+      servicosWedding: casamento?.servicosWedding,
+      planosWedding: casamento?.planosWedding,
+      condHC: casamento?.condHC,
+      condE: casamento?.condE,
+      mensagemWA,
+    };
+
+    const renderMap: Record<string, (c: SlideCtx) => string> = {
+      casamento: renderCasamento,
+      marketing: renderMarketing,
+      filmmaker: renderFilmmaker,
+      '15anos': renderQuinze,
+      site: renderSite,
+    };
+    const renderFn = renderMap[tipo];
+    if (!renderFn) return { notFound: true };
+
+    const slides = renderFn(slideCtx);
+
+    return {
+      props: {
+        slug,
+        tipo,
+        titulo,
+        cliente,
+        slides,
+        categoriaProjeto,
+        mesNome,
+        ano,
+        frameCliente,
+        telefone: String(empresa.telefone || ''),
+        dados,
+        casamento: casamento || null,
+      } as any,
+    };
+  } catch (error) {
+    console.error('Error rendering proposal page:', error);
+    return { notFound: true };
+  }
 };
