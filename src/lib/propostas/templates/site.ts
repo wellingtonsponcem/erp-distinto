@@ -126,9 +126,9 @@ export function render(ctx: SlideCtx): string {
         <div class="w-8 h-8 sm:w-10 sm:h-10 bg-[#161821] border border-white/20 text-white flex items-center justify-center font-bold text-sm sm:text-lg shadow-sm flex-shrink-0">${clienteNome.charAt(0).toUpperCase()}</div>
         <div class="min-w-0">
           <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-400 truncate">Proposta #${numeroProp}</span>
+            <span class="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-400 truncate"><span class="hidden sm:inline">Proposta Comercial #${numeroProp}</span><span class="sm:hidden">#${numeroProp}</span></span>
             <span class="inline-flex items-center px-1.5 py-0.5 text-[9px] sm:text-[11px] font-medium bg-[#1f222e] text-slate-200 border border-white/20 flex-shrink-0">
-              <span class="w-1.5 h-1.5 bg-white mr-1 sm:mr-1.5 animate-pulse"></span>${vencida?'Vencida':'Aprovado'}
+              <span class="w-1.5 h-1.5 bg-white mr-1 sm:mr-1.5 animate-pulse"></span><span class="hidden sm:inline">${vencida?'Vencida':'Aguardando Aprovação'}</span><span class="sm:hidden">${vencida?'Vencida':'Aguardando'}</span>
             </span>
           </div>
           <h1 class="text-xs sm:text-sm font-semibold text-white tracking-tight truncate">${clienteNome}</h1>
@@ -139,11 +139,15 @@ export function render(ctx: SlideCtx): string {
           <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Emissão: ${emissaoFmt}</span>
           <span class="text-xs font-semibold text-slate-300">Validade: ${validadeDias} dias corridos</span>
         </div>
+        <!-- Mobile: ícone apenas (igual Stitch 60dc4b33) | Desktop: texto -->
+        <button class="no-print inline-flex sm:hidden items-center justify-center w-9 h-9 border border-[#272935] bg-[#16181f] text-slate-300 hover:text-white transition" onclick="window.print()" title="Salvar em PDF">
+          <svg width="16" height="16" style="width:16px;height:16px" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
+        </button>
         <button class="no-print hidden sm:inline-flex items-center px-3.5 py-2 border border-[#262a38] shadow-sm text-xs font-medium text-slate-200 bg-[#161821] hover:bg-[#1f222e] hover:border-[#323749] transition" onclick="window.print()">
           <svg width="16" height="16" style="width:16px;height:16px" class="w-4 h-4 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
           Salvar em PDF
         </button>
-        <a class="no-print inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 border border-white text-[11px] sm:text-xs font-bold text-black bg-white hover:bg-slate-200 transition" href="#investimento">Aprovar Proposta
+        <a class="no-print hidden sm:inline-flex items-center px-3 py-1.5 sm:px-4 sm:py-2 border border-white text-[11px] sm:text-xs font-bold text-black bg-white hover:bg-slate-200 transition" href="#investimento">Aprovar Proposta
           <svg width="12" height="12" style="width:12px;height:12px" class="w-3 h-3 sm:w-3.5 sm:h-3.5 ml-1 sm:ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </a>
       </div>
