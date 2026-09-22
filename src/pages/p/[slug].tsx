@@ -14,6 +14,7 @@ import { render as renderCasamento } from '@/lib/propostas/templates/casamento';
 import { render as renderMarketing } from '@/lib/propostas/templates/marketing';
 import { render as renderFilmmaker } from '@/lib/propostas/templates/filmmaker';
 import { render as renderQuinze } from '@/lib/propostas/templates/quinze';
+import { render as renderSite } from '@/lib/propostas/templates/site';
 import { LgpdConsent } from '@/components/LgpdConsent';
 import DOMPurify from 'isomorphic-dompurify';
 
@@ -213,11 +214,11 @@ ${upgradesHtml}
 }
 
 /** Injeta HTML sanitizado (anti-XSS) e re-executa eventuais <script> após o hydration. */
-function Injected({ html }: { html: string }) {
+function Injected({ html, isSite }: { html: string; isSite?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
   const sanitized = DOMPurify.sanitize(html, {
-    ALLOWED_TAGS: ['div','section','p','h1','h2','h3','h4','span','a','img','ul','ol','li','br','hr','strong','em','u','b','i','style','button','svg','path','picture','source','link'],
-    ALLOWED_ATTR: ['style','class','src','href','alt','id','data-*','width','height','viewBox','fill','stroke','stroke-width','stroke-linecap','stroke-linejoin','crossorigin','rel','media','srcset'],
+    ALLOWED_TAGS: ['div','section','p','h1','h2','h3','h4','h5','span','a','img','ul','ol','li','br','hr','strong','em','u','b','i','style','button','svg','path','g','circle','rect','picture','source','link','header','main','aside','script'],
+    ALLOWED_ATTR: ['style','class','src','href','alt','id','data-*','width','height','viewBox','fill','stroke','stroke-width','stroke-linecap','stroke-linejoin','crossorigin','rel','media','srcset','onclick','target','d','onerror','xmlns','fill-rule','clip-rule','stroke-dasharray','stroke-dashoffset','transform','cx','cy','r','x','y','rx','ry','points','x1','y1','x2','y2'],
     ALLOW_UNKNOWN_PROTOCOLS: false,
   });
 
@@ -242,9 +243,11 @@ function Injected({ html }: { html: string }) {
 export default function PublicProposalPage(props: PageProps) {
   const { slug, tipo, titulo, cliente, slides, categoriaProjeto, mesNome, ano, frameCliente, telefone, dados, casamento } = props;
   const isCasamento = tipo === 'casamento';
+  const isSite = tipo === 'site';
 
   useEffect(() => {
     document.body.classList.add('type-' + tipo);
+    if (isSite) document.body.style.background = '#0b0c10';
 
     if (isCasamento && casamento) {
       const scriptCode = investimentoScript({
@@ -293,6 +296,33 @@ export default function PublicProposalPage(props: PageProps) {
 
   const htmlFinal = slides + (isCasamento && casamento ? planModalHtml(casamento) : '');
 
+  const responsavelTxt = textoResponsavel(dados);
+  const frameClienteFull = (frameCliente + (responsavelTxt ? ' | ' + mbUpper(responsavelTxt) : '')).trim();
+  const showFixedEtapasTitle = tipo === 'marketing'; // site não usa etapas
+
+  // Site Dark Corporate — Stitch layout: hide proposal chrome, use its own header/floating bar
+  if (isSite) {
+    return (
+      <>
+        <Head>
+          <title>{titulo}</title>
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+          <script src="https://cdn.tailwindcss.com"></script>
+          <script dangerouslySetInnerHTML={{ __html: `tailwind.config={darkMode:'class',theme:{extend:{fontFamily:{sans:['"Plus Jakarta Sans"','system-ui','sans-serif']},colors:{brand:{dark:'#0b0c10',canvas:'#101217',card:'#161821',cardMuted:'#1b1e29',border:'#262a38',borderLight:'#323749',accent:'#f59e0b'}},boxShadow:{subtle:'0 4px 20px -2px rgba(0,0,0,0.4)',premium:'0 20px 45px -15px rgba(0,0,0,0.6)'}}}}` }} />
+          <style dangerouslySetInnerHTML={{ __html: `html{overflow:auto!important} body{overflow:auto!important; background:#0b0c10!important; font-family:"Plus Jakarta Sans",system-ui,sans-serif} .proposal-wrapper{height:auto!important; overflow:visible!important; scroll-snap-type:none!important} .proposal-frame{display:none!important} .btn-floating{display:none!important} ::selection{background:#f59e0b;color:#0b0c10}` }} />
+        </Head>
+        <div style={{ background: '#0b0c10', minHeight: '100vh' }}>
+          <Injected html={htmlFinal} isSite />
+        </div>
+        <LgpdConsent showCheckboxField={false} />
+      </>
+    );
+  }
+
   return (
     <>
       <Head>
@@ -305,10 +335,99 @@ export default function PublicProposalPage(props: PageProps) {
           href="https://fonts.googleapis.com/css2?family=Playfair Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@200;300;400;500;600;700&family=Dancing+Script:wght@400;500;600;700&display=swap"
           rel="stylesheet"
         />
+        <link rel="stylesheet" href={raizUrl('/assets/css/propostas.css')} />
+        <link rel="stylesheet" href={raizUrl('/assets/css/propostas-mobile.css')} />
+        <script src="https://unpkg.com/lucide@latest"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
         <script dangerouslySetInnerHTML={{ __html: publicInlineScript(slug, isCasamento) }} />
       </Head>
 
-      <Injected html={htmlFinal} />
+      <header className="mobile-header no-print" style={{ display: 'none' }}>
+        <span className="mobile-header-logo">DISTINTO</span>
+        <span className="mobile-header-title">{titulo} — {cliente}</span>
+      </header>
+
+      <div className="proposal-hud-lines"></div>
+      <div className="proposal-frame">
+        <div className="frame-item">
+          <div className="frame-top">{categoriaProjeto}</div>
+          <div className="frame-bottom logo-container" id="dynamic-logo">
+            <img src={raizUrl('/assets/distinto_logo.svg')} alt="Distinto" id="logo-svg" />
+            <span className="logo-text">PONCEM STUDIO | DISTINTO</span>
+          </div>
+        </div>
+        <div className="frame-item">
+          <div className="frame-top">{mesNome}</div>
+          <div className="frame-bottom">{frameClienteFull}</div>
+        </div>
+        <div className="frame-item">
+          <div className="frame-top">{ano}</div>
+          <div className="frame-bottom">PROPOSTA</div>
+        </div>
+      </div>
+
+      <div className="proposal-wrapper">
+        {showFixedEtapasTitle && (
+          <div className="fixed-section-title">
+            <h2>ETAPAS DO<br />PROJETO</h2>
+          </div>
+        )}
+        <Injected html={htmlFinal} />
+      </div>
+
+      <button className="btn-export-top no-print" onClick={() => (window as any).showExportModal?.()}>
+        <i data-lucide="file-down"></i>
+        <span>PDF</span>
+      </button>
+
+      {!isCasamento && (
+        <a
+          href={`https://wa.me/${String(telefone || '5527988586935').replace(/\D/g, '')}?text=${encodeURIComponent('Olá! Gostaria de aprovar a proposta: ' + titulo + ' (Ref: ' + slug + ')')}`}
+          id="btn-approve"
+          className="btn-floating no-print"
+        >
+          <span>Aprovar Proposta</span>
+          <i data-lucide="check-circle"></i>
+        </a>
+      )}
+
+      {!isCasamento && (
+        <div className="mobile-action-bar no-print">
+          <a
+            href={`https://wa.me/${String(telefone || '5527988586935').replace(/\D/g, '')}?text=${encodeURIComponent('Olá! Gostaria de aprovar a proposta: ' + titulo + ' (Ref: ' + slug + ')')}`}
+            className="mobile-btn-approve"
+          >
+            <i data-lucide="check-circle"></i>
+            <span>Aprovar</span>
+          </a>
+          <button onClick={() => (window as any).showExportModal?.()} className="mobile-btn-pdf">
+            <i data-lucide="file-down"></i>
+            <span>PDF</span>
+          </button>
+        </div>
+      )}
+
+      <div id="export-modal" className="export-modal no-print" style={{ display: 'none' }}>
+        <div className="export-modal-content">
+          <h3>Exportar Proposta</h3>
+          <p>Cada seção da proposta será exportada como uma página A4 em paisagem.</p>
+          <div className="export-options">
+            <button onClick={() => (window as any).exportPDF?.()} className="export-option">
+              <div className="option-preview horizontal">
+                <div className="mac-screen"></div>
+              </div>
+              <span>Exportar em paisagem</span>
+            </button>
+          </div>
+          <button onClick={() => (window as any).hideExportModal?.()} className="btn-cancel-export">
+            Cancelar
+          </button>
+        </div>
+      </div>
+
+      <script src={raizUrl('/assets/js/propostas.js') + '?v=pdf-canvas-3'}></script>
 
       {/* LGPD COOKIE & PRIVACY BANNER */}
       <LgpdConsent showCheckboxField={false} />
@@ -346,7 +465,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const mesNome = MESES_PT[mesNum] || 'JANEIRO';
   const ano = String(criadoEm.getFullYear());
 
-  const categoriaProjeto = (dados.categoria_projeto || 'Wedding').toUpperCase();
+  const categoriaProjeto = (dados.categoria_projeto || (tipo === 'site' ? 'Website Institucional' : 'Wedding')).toUpperCase();
   const frameCliente = mbUpper(cliente);
 
   let casamento: CasamentoProps | undefined = undefined;
@@ -426,6 +545,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     marketing: renderMarketing,
     filmmaker: renderFilmmaker,
     '15anos': renderQuinze,
+    site: renderSite,
   };
   const renderFn = renderMap[tipo];
   if (!renderFn) return { notFound: true };

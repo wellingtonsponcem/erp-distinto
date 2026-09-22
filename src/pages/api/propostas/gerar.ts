@@ -14,7 +14,26 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse) => 
     return res.status(405).json({ erro: 'Método não permitido' });
   }
 
-  const d = req.body || {};
+  // Normaliza FormData (chaves com colchetes) para site_parcelas
+  const rawBody: any = req.body || {};
+  // Se veio como FormData multipart, Next pode ter deixado chaves planas; reconstruir parcelas site
+  if (!rawBody.site_pagamento_parcelas && typeof rawBody === 'object') {
+    const parcelasMap: Record<number, any> = {};
+    for (const k of Object.keys(rawBody)) {
+      const m = k.match(/^site_pagamento_parcelas\[(\d+)\]\[(\w+)\]$/);
+      if (m) {
+        const idx = parseInt(m[1], 10);
+        const field = m[2];
+        parcelasMap[idx] = parcelasMap[idx] || {};
+        parcelasMap[idx][field] = rawBody[k];
+      }
+    }
+    const keys = Object.keys(parcelasMap);
+    if (keys.length > 0) {
+      rawBody.site_pagamento_parcelas = Object.keys(parcelasMap).sort((a,b)=> parseInt(a)-parseInt(b)).map(k=> parcelasMap[parseInt(k,10)]);
+    }
+  }
+  const d: any = rawBody;
   if (!d.tipo) {
     return res.status(422).json({ erro: 'O tipo de serviço é obrigatório.' });
   }
@@ -51,11 +70,21 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse) => 
     } else {
       // MODO NOVO LEAD: criar pré-cadastro na tabela de clientes
       if (tipo !== 'casamento') {
-        if (!d.empresa_nome || !d.responsavel) {
-          return res.status(422).json({ erro: 'Nome da empresa e responsável são obrigatórios para novos leads.' });
+        if (tipo === 'site') {
+          const siteNome = String(d.site_cliente_nome || d.empresa_nome || d.cliente_nome || '').trim();
+          const siteResp = String(d.responsavel || d.site_cliente_nome || '').trim();
+          if (!siteNome) {
+            return res.status(422).json({ erro: 'Nome do cliente para site é obrigatório.' });
+          }
+          clienteNome = siteNome;
+          responsavel = siteResp || siteNome;
+        } else {
+          if (!d.empresa_nome || !d.responsavel) {
+            return res.status(422).json({ erro: 'Nome da empresa e responsável são obrigatórios para novos leads.' });
+          }
+          clienteNome = String(d.empresa_nome);
+          responsavel = String(d.responsavel);
         }
-        clienteNome = String(d.empresa_nome);
-        responsavel = String(d.responsavel);
       } else {
         clienteNome =
           d.nome_noivo && d.nome_noiva ? `${d.nome_noivo} & ${d.nome_noiva}` : 'Novo Casamento';
@@ -65,8 +94,8 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse) => 
       }
 
       clienteId = generateId();
-      const whatsappLead = d.whatsapp || '';
-      const segmentoLead = tipo === 'casamento' ? 'Casamento' : tipo === 'marketing' ? 'Marketing' : 'Filmmaker';
+      const whatsappLead = d.whatsapp || d.site_whatsapp || '';
+      const segmentoLead = tipo === 'casamento' ? 'Casamento' : tipo === 'site' ? 'Site' : tipo === 'marketing' ? 'Marketing' : 'Filmmaker';
 
       await query(
         `INSERT INTO clientes (id, nome, contato, segmento, criado_em) VALUES ($1, $2, $3, $4, CURRENT_TIMESTAMP)`,
@@ -223,13 +252,38 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse) => 
       contato_tipo: d.contato_tipo || 'noiva',
       upgrades: d.upgrades || { heritage: [], cinematic: [], essencial: [] },
       pacote_dado_andamento: d.pacote_dado_andamento || '',
+      // Site institucional (pagamento parametrizável, sem manutenção)
+      site_cliente_nome: d.site_cliente_nome || '',
+      site_valor_total: d.site_valor_total || '',
+      site_pagamento_modelo: d.site_pagamento_modelo || 'parcelado',
+      site_pagamento_forma: d.site_pagamento_forma || d.forma_pagamento || 'pix_boleto',
+      site_pagamento_parcelas: Array.isArray(d.site_pagamento_parcelas) ? d.site_pagamento_parcelas : (Array.isArray(d['site_pagamento_parcelas']) ? d['site_pagamento_parcelas'] : []),
+      site_prazo_dias: d.site_prazo_dias || '',
+      site_validade_dias: d.site_validade_dias || '',
+      site_data_emissao: d.site_data_emissao || '',
+      site_pagamento_obs: d.site_pagamento_obs || '',
+      site_objetivo: d.site_objetivo || '',
+      site_categoria: d.categoria_projeto || d.site_categoria || 'WEBSITE INSTITUCIONAL',
+      categoria_projeto: d.categoria_projeto || (tipo === 'site' ? 'WEBSITE INSTITUCIONAL' : 'PROJETO DE ESTRATÉGIA'),
     });
 
-    const validade = d.validade ? String(d.validade) : dataMaisDias(15);
-    const tituloOriginal = d.titulo ? String(d.titulo) : `Proposta Comercial - ${clienteNome}`;
+    const validade = d.validade ? String(d.validade) : (tipo === 'site' && d.site_validade_dias ? dataMaisDias(parseInt(String(d.site_validade_dias)) || 10) : dataMaisDias(15));
+    // Fallback título para site
+    let tituloOriginal = d.titulo ? String(d.titulo) : `Proposta Comercial - ${clienteNome}`;
+    if (tipo === 'site' && !d.titulo) {
+      tituloOriginal = `Proposta Comercial — Criação de site institucional — ${clienteNome}`;
+    }
     const titulo = tituloOriginal;
 
-    const valorTotal = decimalBrasileiro(d.valor_total ?? 0);
+    let valorTotal = decimalBrasileiro(d.valor_total ?? 0);
+    if (tipo === 'site') {
+      const siteTotalRaw = d.site_valor_total ?? d.valor_total ?? 0;
+      valorTotal = decimalBrasileiro(siteTotalRaw);
+      if (Array.isArray(d.site_pagamento_parcelas) && d.site_pagamento_parcelas.length > 0) {
+        const somaParcelas = (d.site_pagamento_parcelas as any[]).reduce((acc: number, p: any) => acc + decimalBrasileiro(p.valor), 0);
+        if (somaParcelas > 0) valorTotal = somaParcelas;
+      }
+    }
 
     await query(
       `INSERT INTO propostas (id, cliente_id, cliente_nome, tipo, slug, titulo, subtitulo, validade, dados_json, valor_total, status, oportunidade_id, pasta_id)

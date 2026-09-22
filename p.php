@@ -37,7 +37,7 @@ $mesesPt = [
 ];
 $mesNome = $mesesPt[$dataCriacao->format('n')] ?? 'JUNHO';
 $ano = $dataCriacao->format('Y');
-$categoriaProjeto = $dados['categoria_projeto'] ?? 'PROJETO DE ESTRAT├ëGIA';
+$categoriaProjeto = $dados['categoria_projeto'] ?? ($tipo === 'site' ? 'WEBSITE INSTITUCIONAL' : 'PROJETO DE ESTRATEGIA');
 
 // Definir arquivo de template
 $templateFile = __DIR__ . "/includes/propostas/template-{$tipo}.php";

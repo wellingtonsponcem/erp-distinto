@@ -70,7 +70,9 @@ export default requireAdmin(async (req: NextApiRequest, res: NextApiResponse) =>
     const pagamentoModo = String(payload.pagamento_modo ?? 'parcelado') === 'avista' ? 'avista' : 'parcelado';
     const permitirPosEvento = !!(payload.permitir_parcela_pos_evento && payload.permitir_parcela_pos_evento !== 'false');
 
-    if (!['', 'heritage', 'cinematic', 'essencial'].includes(plano)) {
+    // Para site, plano é irrelevante (usar parcelas parametrizáveis diretamente)
+    const isSite = String(proposta.tipo ?? proposta.tipo_projeto ?? '') === 'site' || String(dados.categoria_projeto ?? '').toLowerCase().includes('website') || plano === 'site';
+    if (!isSite && !['', 'heritage', 'cinematic', 'essencial'].includes(plano)) {
       return res.status(422).json({ success: false, erro: 'Plano escolhido inválido.' });
     }
 
@@ -80,9 +82,9 @@ export default requireAdmin(async (req: NextApiRequest, res: NextApiResponse) =>
     dados['pagamento_modo'] = pagamentoModo;
     dados['permitir_parcela_pos_evento'] = permitirPosEvento;
     dados['asaas_billing_type'] = payload.asaas_billing_type ?? 'UNDEFINED';
-    const percentualEntrada = plano === 'heritage' ? 25 : 20;
-    const maxParcelasPlano = plano === 'heritage' ? 6 : 5;
-    const parcelas = pagamentoModo === 'avista' ? 1 : Math.max(1, parseInt(payload.asaas_total_parcelas ?? 1, 10) || 1);
+    const percentualEntrada = isSite ? 50 : (plano === 'heritage' ? 25 : 20);
+    const maxParcelasPlano = isSite ? (Array.isArray(dados.site_pagamento_parcelas) ? Math.max(1, dados.site_pagamento_parcelas.length) : 12) : (plano === 'heritage' ? 6 : 5);
+    const parcelas = pagamentoModo === 'avista' ? 1 : isSite ? (Array.isArray(dados.site_pagamento_parcelas) ? dados.site_pagamento_parcelas.length : Math.max(1, parseInt(payload.asaas_total_parcelas ?? 1, 10) || 1)) : Math.max(1, parseInt(payload.asaas_total_parcelas ?? 1, 10) || 1);
     dados['asaas_first_due_date'] = payload.asaas_first_due_date ?? '';
     dados['asaas_valor_sinal'] = decimalFormulario(payload.asaas_valor_sinal ?? 0);
     dados['asaas_sinal_vencimento'] = payload.asaas_sinal_vencimento ?? '';

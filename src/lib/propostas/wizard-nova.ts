@@ -285,6 +285,16 @@ ${upgradesHtml}
                         <h3 class="font-black text-xl text-white">15 Anos</h3>
                         <p class="text-sm text-zinc-500 mt-3 leading-relaxed">Cobertura completa de festas de debutante.</p>
                     </div>
+
+                    <!-- Site Institucional -->
+                    <div @click="tipoProposta = 'site'; passo = 2; subPasso = 1; $nextTick(() => lucide.createIcons())" 
+                         class="group cursor-pointer bg-white/5 border border-white/5 hover:border-white/20 rounded-[2.5rem] p-8 transition-all hover:bg-white/[0.08] text-center flex flex-col items-center justify-center min-h-[320px] backdrop-blur-md">
+                        <div class="w-24 h-24 bg-white/5 rounded-[2.3rem] flex items-center justify-center mb-6 group-hover:scale-110 transition-all duration-500 group-hover:bg-white group-hover:text-black">
+                            <i data-lucide="globe" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="font-black text-xl text-white">Site Institucional</h3>
+                        <p class="text-sm text-zinc-500 mt-3 leading-relaxed">Site responsivo até 5 páginas, elegante e focado em conversão.</p>
+                    </div>
                 </div>
             </div>
 
@@ -361,6 +371,7 @@ ${optionsOportunidades}
                                     <option value="casamento">Casamento</option>
                                     <option value="15anos">15 Anos</option>
                                     <option value="filmmaker">Filmmaker (Cinematic)</option>
+                                    <option value="site">Site Institucional</option>
                                 </select>
                             </div>
                         </div>
@@ -408,6 +419,82 @@ ${optionsOportunidades}
                                 <option value="cartao">Cartão de Crédito (+2,13%)</option>
                             </select>
                         </div>
+                    </div>
+                </section>
+
+                <!-- CONFIGURAÇÕES DE SITE (pagamento parametrizável) -->
+                <section class="card p-6" x-show="tipoProposta === 'site'">
+                    <h2 class="section-header-premium">
+                        <i data-lucide="globe" class="w-5 h-5 text-emerald-500"></i>
+                        Site Institucional — Escopo & Pagamento Parametrizável
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div class="form-group">
+                            <label class="label-premium">Cliente (ex: Flávia Personal Chef)</label>
+                            <input type="text" name="site_cliente_nome" class="input" x-model="siteClienteNome" placeholder="Flávia Personal Chef">
+                        </div>
+                        <div class="form-group">
+                            <label class="label-premium">Categoria do projeto</label>
+                            <input type="text" name="categoria_projeto" class="input" x-model="siteCategoria" placeholder="WEBSITE INSTITUCIONAL">
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="form-group">
+                            <label class="label-premium">Valor total (R$)</label>
+                            <input type="number" step="0.01" name="site_valor_total" class="input font-bold" x-model="siteValorTotal" @input="siteRecalcularParcelas()" placeholder="2200.00">
+                        </div>
+                        <div class="form-group">
+                            <label class="label-premium">Modelo</label>
+                            <select name="site_pagamento_modelo" class="input" x-model="sitePagamentoModelo" @change="siteRecalcularParcelas()">
+                                <option value="parcelado">Parcelado</option>
+                                <option value="avista">À vista</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="label-premium">Forma</label>
+                            <select name="site_pagamento_forma" class="input" x-model="sitePagamentoForma">
+                                <option value="pix_boleto">PIX / Boleto</option>
+                                <option value="boleto_pix">Boleto / PIX</option>
+                                <option value="cartao">Cartão de crédito</option>
+                                <option value="pix">PIX</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group mb-2" x-show="sitePagamentoModelo === 'parcelado'">
+                        <label class="label-premium">Parcelas (parametrizável — some deve bater com valor total)</label>
+                        <template x-for="(parc, idx) in siteParcelas" :key="idx">
+                            <div class="grid grid-cols-12 gap-2 mb-2 p-3 rounded-xl bg-zinc-50 border border-zinc-100">
+                                <div class="col-span-1 flex items-center justify-center font-bold text-xs" x-text="'#'+parc.n"></div>
+                                <div class="col-span-5"><input type="text" :name="'site_pagamento_parcelas['+idx+'][label]'" class="input text-xs" x-model="parc.label" placeholder="Na aprovação"></div>
+                                <div class="col-span-3"><input type="number" step="0.01" :name="'site_pagamento_parcelas['+idx+'][valor]'" class="input text-xs font-bold" x-model="parc.valor" @input="siteRecalcularTotal()"></div>
+                                <div class="col-span-2"><input type="text" :name="'site_pagamento_parcelas['+idx+'][vencimento]'" class="input text-xs" x-model="parc.vencimento" placeholder="na_aprovacao"></div>
+                                <div class="col-span-1 flex items-center justify-end"><button type="button" @click="siteRemoverParcela(idx)" class="text-red-500 hover:text-red-700"><i data-lucide="trash-2" class="w-4 h-4"></i></button></div>
+                            </div>
+                        </template>
+                        <button type="button" @click="siteAdicionarParcela()" class="mt-2 text-xs font-bold text-emerald-600 hover:underline">+ Adicionar parcela</button>
+                        <p class="text-[10px] text-zinc-500 mt-2">Soma parcelas: <span x-text="siteSomaParcelasFmt"></span> · Total: <span x-text="siteValorTotalFmt"></span> <span x-show="!siteParcelasOk" class="text-red-500 font-bold"> — ajuste os valores</span></p>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div class="form-group">
+                            <label class="label-premium">Prazo (dias úteis)</label>
+                            <input type="number" name="site_prazo_dias" class="input" x-model="sitePrazoDias" placeholder="12">
+                        </div>
+                        <div class="form-group">
+                            <label class="label-premium">Validade (dias corridos)</label>
+                            <input type="number" name="site_validade_dias" class="input" x-model="siteValidadeDias" placeholder="10">
+                        </div>
+                        <div class="form-group">
+                            <label class="label-premium">Data emissão</label>
+                            <input type="date" name="site_data_emissao" class="input" x-model="siteDataEmissao">
+                        </div>
+                    </div>
+                    <div class="form-group mb-4">
+                        <label class="label-premium">Observação de pagamento (opcional)</label>
+                        <input type="text" name="site_pagamento_obs" class="input text-xs" x-model="sitePagamentoObs" placeholder="Publicação definitiva após quitação total">
+                    </div>
+                    <div class="form-group">
+                        <label class="label-premium">Objetivo / briefing (opcional — vai para slide 2)</label>
+                        <textarea name="site_objetivo" class="input text-xs" x-model="siteObjetivo" rows="3" placeholder="Ex: presença digital elegante para a Flávia Personal Chef..."></textarea>
                     </div>
                 </section>
 
@@ -861,6 +948,21 @@ window.proposta = function() {
         passo: 1,
         subPasso: 1,
         mesesContrato: 12,
+        // Site Institucional (parametrizável)
+        siteClienteNome: 'Flávia Personal Chef',
+        siteCategoria: 'WEBSITE INSTITUCIONAL',
+        siteValorTotal: 2200,
+        sitePagamentoModelo: 'parcelado',
+        sitePagamentoForma: 'pix_boleto',
+        siteParcelas: [{ n: 1, label: 'Na aprovação', valor: 1100, vencimento: 'na_aprovacao' }, { n: 2, label: 'Na entrega / aprovação final', valor: 1100, vencimento: 'na_entrega' }],
+        sitePrazoDias: 12,
+        siteValidadeDias: 10,
+        siteDataEmissao: new Date().toISOString().slice(0,10),
+        sitePagamentoObs: 'Publicação definitiva após quitação total',
+        siteObjetivo: '',
+        siteSomaParcelasFmt: 'R$ 2.200,00',
+        siteValorTotalFmt: 'R$ 2.200,00',
+        siteParcelasOk: true,
         // Campos de Casamento
         nomeNoivo: '',
         nomeNoiva: '',
@@ -929,6 +1031,7 @@ window.proposta = function() {
         depoimento02Autor: 'Mariana & Lucas',
         
         init() {
+            this.siteRecalcularTotal();
             if (this.tipoProposta !== 'casamento' && this.servicosSelecionados.length === 0) {
                 this.adicionarServico();
             }
@@ -1033,6 +1136,35 @@ window.proposta = function() {
 
             const mensalFinal = Math.max(0, sub - desconto);
             this.valorTotal = Math.round(mensalFinal * meses * 100) / 100;
+        },
+        siteAdicionarParcela() {
+            const n = this.siteParcelas.length + 1;
+            this.siteParcelas.push({ n, label: 'Parcela ' + n, valor: 0, vencimento: '' });
+            this.siteRecalcularTotal();
+        },
+        siteRemoverParcela(idx) {
+            if (this.siteParcelas.length <= 1) return;
+            this.siteParcelas.splice(idx, 1);
+            this.siteParcelas.forEach((p,i)=> p.n = i+1);
+            this.siteRecalcularTotal();
+        },
+        siteRecalcularParcelas() {
+            if (this.sitePagamentoModelo === 'avista') {
+                this.siteParcelas = [{ n: 1, label: 'À vista na aprovação', valor: parseFloat(this.siteValorTotal)||0, vencimento: 'na_aprovacao' }];
+            } else if (this.siteParcelas.length === 0) {
+                const half = Math.round(parseFloat(this.siteValorTotal||0)/2*100)/100;
+                this.siteParcelas = [{ n: 1, label: 'Na aprovação', valor: half, vencimento: 'na_aprovacao' }, { n: 2, label: 'Na entrega / aprovação final', valor: Math.round((parseFloat(this.siteValorTotal||0)-half)*100)/100, vencimento: 'na_entrega' }];
+            }
+            this.siteRecalcularTotal();
+        },
+        siteRecalcularTotal() {
+            const total = parseFloat(this.siteValorTotal)||0;
+            const soma = this.siteParcelas.reduce((a,c)=> a + (parseFloat(c.valor)||0), 0);
+            this.siteValorTotalFmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total);
+            this.siteSomaParcelasFmt = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(soma);
+            this.siteParcelasOk = Math.abs(total - soma) < 0.01;
+            // também alimenta valorTotal para backend marketing genérico
+            this.valorTotal = total;
         }
     };
 };

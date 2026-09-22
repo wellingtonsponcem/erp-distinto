@@ -481,6 +481,7 @@ ${optionsClientes}
                                     <option value="15anos" ${tipoPropostaInicial === '15anos' ? 'selected' : ''}>15 Anos</option>
                                     <option value="corporativo" ${tipoPropostaInicial === 'corporativo' ? 'selected' : ''}>Corporativo</option>
                                     <option value="marketing" ${tipoPropostaInicial === 'marketing' ? 'selected' : ''}>Marketing Digital</option>
+                                    <option value="site" ${tipoPropostaInicial === 'site' ? 'selected' : ''}>Site Institucional</option>
                                 </select>
                             </div>
                             <div class="form-group" data-wedding-field>

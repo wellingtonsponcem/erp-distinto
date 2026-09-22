@@ -8,7 +8,7 @@ Documento de referência para recriação do módulo de Propostas no Next.js. De
 
 O módulo de Propostas permite ao time comercial:
 
-- **Criar** propostas comerciais em 3 tipos: `casamento`, `marketing`, `filmmaker`.
+- **Criar** propostas comerciais em 4 tipos: `casamento`, `marketing`, `filmmaker`, `site` (site institucional até 5 páginas, pagamento parametrizável, sem manutenção recorrente).
 - **Editar** em wizard de 4 passos (dados, serviços, cronograma, condições).
 - **Organizar** em pastas com arrastar e soltar, contexto e busca.
 - **Visualizar** a proposta como apresentação de slides (fullscreen, scroll-snap) via link público `/p/{slug}`.
@@ -46,6 +46,7 @@ Admin acompanha (status, histórico, fechamento)  →  status 'aceita' → lanç
 | | `includes/propostas/template-marketing.php` (~824) | Marketing — 14 slides |
 | | `includes/propostas/template-filmmaker.php` (99) | Filmmaker — 4 slides |
 | | `includes/propostas/template-15anos.php` (84) | 15 Anos — 4 slides |
+| | `includes/propostas/template-site.php` (~420) | Site — 10 slides (capa, objetivo, escopo 4 frentes, entregas, investimento parcelado parametrizável, prazo, responsabilidades, não incluso, revisões, CTA) |
 | Telas admin | `gerenciamento/propostas.php` (1421) | Listagem, pastas, modais, tema escuro |
 | | `gerenciamento/proposta_nova.php` (1205) | Wizard de criação (Passo 1 e 2) |
 | | `gerenciamento/proposta_editar.php` (1635) | Wizard de edição (Passos 1 a 4) |
