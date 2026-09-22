@@ -399,7 +399,14 @@ function convertPgToMysql(sql: string, params: any[]): { mysqlSql: string; mysql
     }
   }
 
-  mysqlSql = mysqlSql.replace(/\bcreated_at\b/gi, 'criado_em');
+  // propostas_historico usa `created_at` (legado) — não converter para `criado_em`
+  const hasPropostasHistorico = /\bpropostas_historico\b/i.test(mysqlSql);
+  if (!hasPropostasHistorico) {
+    mysqlSql = mysqlSql.replace(/\bcreated_at\b/gi, 'criado_em');
+  } else {
+    // para propostas_historico, normaliza ambos para created_at (tabela tem created_at, mas algumas queries usam criado_em)
+    mysqlSql = mysqlSql.replace(/\bcriado_em\b/gi, 'created_at');
+  }
   mysqlSql = mysqlSql.replace(/::text/gi, '');
   mysqlSql = mysqlSql.replace(/::numeric/gi, '');
   mysqlSql = mysqlSql.replace(/\$\d+/g, '?');
