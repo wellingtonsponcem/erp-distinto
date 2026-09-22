@@ -125,13 +125,8 @@ export function render(ctx: SlideCtx): string {
       <div class="flex items-center space-x-2.5 sm:space-x-4 min-w-0">
         <div class="w-8 h-8 sm:w-10 sm:h-10 bg-[#161821] border border-white/20 text-white flex items-center justify-center font-bold text-sm sm:text-lg shadow-sm flex-shrink-0">${clienteNome.charAt(0).toUpperCase()}</div>
         <div class="min-w-0">
-          <div class="flex items-center gap-1.5 flex-wrap">
-            <span class="text-[10px] sm:text-[11px] font-bold tracking-widest uppercase text-slate-400 truncate"><span class="hidden sm:inline">Proposta Comercial #${numeroProp}</span><span class="sm:hidden">#${numeroProp}</span></span>
-            <span class="inline-flex items-center px-1.5 py-0.5 text-[9px] sm:text-[11px] font-medium bg-[#1f222e] text-slate-200 border border-white/20 flex-shrink-0">
-              <span class="w-1.5 h-1.5 bg-white mr-1 sm:mr-1.5 animate-pulse"></span><span class="hidden sm:inline">${vencida?'Vencida':'Aguardando Aprovação'}</span><span class="sm:hidden">${vencida?'Vencida':'Aguardando'}</span>
-            </span>
-          </div>
           <h1 class="text-xs sm:text-sm font-semibold text-white tracking-tight truncate">${clienteNome}</h1>
+          <span class="text-[10px] font-bold tracking-widest uppercase text-slate-500 hidden sm:block">Proposta Comercial</span>
         </div>
       </div>
       <div class="flex items-center gap-2 flex-shrink-0">
@@ -139,15 +134,18 @@ export function render(ctx: SlideCtx): string {
           <span class="text-[11px] uppercase tracking-wider text-slate-400 font-semibold">Emissão: ${emissaoFmt}</span>
           <span class="text-xs font-semibold text-slate-300">Validade: ${validadeDias} dias corridos</span>
         </div>
+        <span class="no-print inline-flex items-center px-2 sm:px-2.5 py-1 sm:py-1.5 text-[10px] sm:text-[11px] font-medium bg-[#1f222e] text-slate-200 border border-white/20 flex-shrink-0 self-center">
+          <span class="w-1.5 h-1.5 bg-white mr-1.5 animate-pulse"></span>${vencida?'Vencida':'Aguardando Aprovação'}
+        </span>
         <!-- Mobile: ícone apenas (igual Stitch 60dc4b33) | Desktop: texto -->
-        <button class="no-print inline-flex sm:hidden items-center justify-center w-9 h-9 border border-[#272935] bg-[#16181f] text-slate-300 hover:text-white transition" onclick="window.print()" title="Salvar em PDF">
+        <button class="no-print inline-flex sm:hidden items-center justify-center w-9 h-9 border border-[#272935] bg-[#16181f] text-slate-300 hover:text-white transition self-center" onclick="window.print()" title="Salvar em PDF">
           <svg width="16" height="16" style="width:16px;height:16px" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </button>
-        <button class="no-print hidden sm:inline-flex items-center px-3.5 py-2 border border-[#262a38] shadow-sm text-xs font-medium text-slate-200 bg-[#161821] hover:bg-[#1f222e] hover:border-[#323749] transition" onclick="window.print()">
+        <button class="no-print hidden sm:inline-flex items-center px-3.5 py-2 border border-[#262a38] shadow-sm text-xs font-medium text-slate-200 bg-[#161821] hover:bg-[#1f222e] hover:border-[#323749] transition self-center" onclick="window.print()">
           <svg width="16" height="16" style="width:16px;height:16px" class="w-4 h-4 mr-1.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
           Salvar em PDF
         </button>
-        <a class="no-print hidden lg:inline-flex items-center px-4 py-2 border border-white text-xs font-bold text-black bg-white hover:bg-slate-200 transition" href="#investimento">Aprovar Proposta
+        <a class="no-print hidden lg:inline-flex items-center px-4 py-2 border border-white text-xs font-bold text-black bg-white hover:bg-slate-200 transition self-center" href="#investimento">Aprovar Proposta
           <svg width="14" height="14" style="width:14px;height:14px" class="w-3.5 h-3.5 ml-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M14 5l7 7m0 0l-7 7m7-7H3" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path></svg>
         </a>
       </div>
