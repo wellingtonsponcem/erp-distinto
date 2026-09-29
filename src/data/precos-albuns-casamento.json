@@ -1,0 +1,136 @@
+{
+  "configuracao_geral": {
+    "tamanho_fechado": "30x30 cm",
+    "tamanho_aberto": "30x60 cm",
+    "abertura": "Panorâmica 180° (Lâminas Rígidas de 800g)",
+    "paginas_base": 20,
+    "retirada": "Presencial (Vitória/ES)",
+    "servicos_inclusos": [
+      "Diagramação Exclusiva da História do Casamento",
+      "Curadoria de Acabamentos Românticos & Nobres",
+      "Tratamento de Imagem Fine Art para Impressão",
+      "Garantia de Fidelidade de Cor & Durabilidade Eterna"
+    ]
+  },
+  "colecao_albuns": [
+    {
+      "id": "essencial_magnetic",
+      "nome_comercial": "Coleção Essencial Magnetic Wedding",
+      "categoria_original": "Simples",
+      "descricao": "Elegância e praticidade para guardar o grande dia, com fechamento magnético e capa fotográfica artesanal.",
+      "acabamento_detalhado": {
+        "capa": "Foto Total com Revestimento em Courvin Nobre",
+        "fechamento": "Sistema de Ímã Invisível",
+        "papel": "Fotográfico Fosco Silk (Anti-Digital e Antirreflexo)",
+        "laminação": "UV Proteção contra Luz e Umidade"
+      },
+      "estojo": {
+        "tipo": "Case Slim Personalizado",
+        "descricao": "Estojo tipo luva em courvin com interior aveludado, projetado para conservação e proteção de um álbum de casamento.",
+        "imagem_referencia": "https://assets.auryn.com.br/public/getModelSizeCoverImage/48937/core/600/522/core-5491-48937?v=3"
+      },
+      "custo_base_fullcolor": 445.0,
+      "investimento_cliente": 767.63,
+      "valor_lamina_extra": 35.0,
+      "imagens": {
+        "capa": "https://assets.auryn.com.br/public/getModelSizeCoverImage/47314/core/600/522/core-5192-47314?v=3",
+        "aberto": "https://assets.auryn.com.br/public/getModelSizeCoverImage/47314/core/600/522/core-5192-47314?v=3"
+      }
+    },
+    {
+      "id": "classic_wood",
+      "nome_comercial": "Coleção Classic Wood & Gold Wedding",
+      "categoria_original": "Intermediário",
+      "descricao": "O toque orgânico da madeira nobre combinado com a sofisticação do corte lateral dourado.",
+      "acabamento_detalhado": {
+        "capa": "Madeira Natural com Aplicação de Foto e Verso em Courvin Nobre",
+        "corte_lateral": "Ouro Metálico (Gold Edge)",
+        "papel": "Fotográfico Fosco Silk (Textura de Tecido)",
+        "laminação": "UV Proteção Extra"
+      },
+      "estojo": {
+        "tipo": "Maleta Classic Box Luxo",
+        "descricao": "Maleta estruturada com alça e fecho metálico, revestida em material coordenado com a capa do álbum.",
+        "imagem_referencia": "https://assets.auryn.com.br/public/getModelSizeCoverImage/48960/core/600/522/core-5504-48960?v=3"
+      },
+      "custo_base_fullcolor": 730.0,
+      "investimento_cliente": 1259.25,
+      "valor_lamina_extra": 40.0,
+      "imagens": {
+        "capa": "https://assets.auryn.com.br/public/getModelSizeCoverImage/47149/core/600/522/core-5286-47149?v=3",
+        "detalhe_madeira": "https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=800&auto=format&fit=crop&q=80"
+      }
+    },
+    {
+      "id": "prestige_crystal",
+      "nome_comercial": "Coleção Prestige Crystal Lux Wedding",
+      "categoria_original": "Top Master",
+      "descricao": "A joia da coroa para o seu casamento. Capa em acrílico que confere profundidade e brilho eterno às memórias da cerimônia e festa.",
+      "acabamento_detalhado": {
+        "capa": "Acrílico Cristal com Foto Impressa em Alta Definição",
+        "corte_lateral": "Ouro Metálico (Gold Edge)",
+        "papel": "Linho Silk Premium (Textura de Tecido de Alta Gramatura)",
+        "laminação": "UV Proteção Extra",
+        "guarda": "Preta Nobre em Papel Especial"
+      },
+      "estojo": {
+        "tipo": "Crystal Box Premium",
+        "descricao": "Caixa luxuosa com base sólida e tampa em acrílico cristal, transformando o álbum do casal em uma peça de arte.",
+        "imagem_referencia": "https://assets.auryn.com.br/public/getModelSizeCoverImage/60367/core/600/522/core-6835-60367?v=3"
+      },
+      "custo_base_fullcolor": 772.0,
+      "investimento_cliente": 1331.70,
+      "valor_lamina_extra": 45.0,
+      "imagens": {
+        "capa": "https://assets.auryn.com.br/public/getModelSizeCoverImage/49121/core/600/522/core-5150-49121?v=3",
+        "detalhe_acrilico": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&auto=format&fit=crop&q=80",
+        "aberto_panoramico": "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=800&auto=format&fit=crop&q=80"
+      }
+    },
+    {
+      "id": "my_book",
+      "nome_comercial": "My Book Wedding",
+      "categoria_original": "Fotográficos",
+      "descricao": "Álbum fotográfico panorâmico compacto de abertura 180°, perfeito como álbum de fotos dos noivos ou presente para os pais.",
+      "acabamento_detalhado": {
+        "formato": "15x15 fechado / 15x30 aberto",
+        "paginas": "20 páginas (10 lâminas)",
+        "papel": "Fosco (Lustre)",
+        "laminacao": "UV Fosco",
+        "corte": "Colorido Preto (+R$45,00)",
+        "capa": "Foto Total Mybook",
+        "laminacao_capa": "Poliéster Brilho"
+      },
+      "estojo": {
+        "tipo": "Case Slim Personalizado (Opcional)",
+        "descricao": "Estojo tipo luva com interior aveludado. Opcional por +R$100,00. Sem estojo incluso por padrão.",
+        "imagem_referencia": "https://assets.auryn.com.br/public/getModelSizeCoverImage/48937/core/600/522/core-5491-48937?v=3",
+        "valor_adicional": 100.0,
+        "opcional": true
+      },
+      "custo_base_fullcolor": 90.0,
+      "investimento_cliente": 155.25,
+      "valor_lamina_extra": 35.0,
+      "imagens": {
+        "capa": "https://assets.auryn.com.br/public/getModelSizeCoverImage/66746/cover/2000/2000/cover-5602-66746?v=3"
+      }
+    }
+  ],
+  "galeria_acabamentos": [
+    {
+      "item": "Papel Linho Silk Wedding",
+      "descricao": "Textura nobre que imita o toque do linho, garantindo requinte e resistência total a marcas de dedos.",
+      "imagem_exemplo": "https://assets.auryn.com.br/image/getCoverCaseImage/1500/1500/2352296/6679b453903686.28580739.jpg"
+    },
+    {
+      "item": "Abertura Panorâmica 180°",
+      "descricao": "Permite que fotos de casais e cerimônias em página dupla sejam apreciadas sem interrupções centrais.",
+      "imagem_exemplo": "https://www.lojafotoclube.com.br/uploads/produtos/detalhadas/album-max-20x30-cm-papel-fujifilm-abertura-panoramica-115520563745f08b7a1eed24.jpg"
+    },
+    {
+      "item": "Corte Lateral Ouro Metálico",
+      "descricao": "Bordas douradas reluzentes que conferem o acabamento luxuoso dos grandes clássicos da encadernação.",
+      "imagem_exemplo": "https://assets.auryn.com.br/image/getCoverCaseImage/1500/1500/2352308/696e80e3a00373.76234008.jpg"
+    }
+  ]
+}
