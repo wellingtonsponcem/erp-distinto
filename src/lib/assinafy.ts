@@ -41,6 +41,9 @@ export class AssinafyService {
   }
 
   public async testConnection(apiKey?: string, accountId?: string, mode?: string): Promise<{ success: boolean; message: string; details?: any }> {
+    if (!apiKey || !accountId) {
+      await this.getConfig();
+    }
     const key = apiKey || this.apiKey;
     const acc = accountId || this.accountId;
     const m = mode || this.mode;
