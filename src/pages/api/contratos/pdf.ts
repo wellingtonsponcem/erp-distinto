@@ -60,8 +60,15 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       });
     }
 
+    let htmlFinal = dadosParsed.contrato_texto || '';
+    if (htmlFinal.includes('{{TITULO_CONTRATO}}') || htmlFinal.includes('[TITULO_CONTRATO]')) {
+      htmlFinal = htmlFinal
+        .replace(/\{\{TITULO_CONTRATO\}\}/g, titulo)
+        .replace(/\[TITULO_CONTRATO\]/g, titulo);
+    }
+
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    return res.status(200).send(dadosParsed.contrato_texto);
+    return res.status(200).send(htmlFinal);
   } catch (err: any) {
     console.error('Erro ao servir contrato:', err);
     return res.status(500).send('Erro interno ao carregar o contrato.');
