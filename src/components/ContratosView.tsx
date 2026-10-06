@@ -63,6 +63,11 @@ const [titulo, setTitulo] = useState('');
   const [modalPdfAberta, setModalPdfAberta] = useState(false);
   const [contratoPdf, setContratoPdf] = useState<any>(null);
 
+  // Modal Compartilhar para Revisão / Enviar Assinatura
+  const [modalShareAberta, setModalShareAberta] = useState(false);
+  const [contratoShare, setContratoShare] = useState<any>(null);
+  const [copiadoFeedback, setCopiadoFeedback] = useState('');
+
   const carregarDados = async () => {
     setLoading(true);
     const [resContratos, resPropostas] = await Promise.all([
@@ -333,6 +338,50 @@ const [titulo, setTitulo] = useState('');
     setModalPdfAberta(true);
   };
 
+  const handleAbrirShareModal = (c: any) => {
+    setContratoShare(c);
+    setCopiadoFeedback('');
+    setModalShareAberta(true);
+  };
+
+  const handleEnviarParaAssinatura = async (c: any) => {
+    if (!confirm(`Deseja alterar o status do contrato "${c.titulo}" para PENDENTE DE ASSINATURA e liberar a assinatura eletrônica?`)) return;
+    try {
+      const res = await safeFetchJson('/api/comercial/contratos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'enviar_assinatura', id: c.id }),
+      });
+      if (res.ok) {
+        alert('Contrato alterado para Pendente de Assinatura com sucesso!');
+        carregarDados();
+        if (contratoShare && contratoShare.id === c.id) {
+          setContratoShare((prev: any) => prev ? { ...prev, status: 'pendente_assinatura' } : null);
+        }
+      } else {
+        alert(res.data?.erro || 'Erro ao atualizar contrato.');
+      }
+    } catch (e) {
+      alert('Erro de conexão ao servidor.');
+    }
+  };
+
+  const handleCopiarLinkRevisao = (id: string) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://erp.wedistinto.com';
+    const url = `${origin}/c/${id}`;
+    navigator.clipboard.writeText(url);
+    setCopiadoFeedback('Link de Revisão Copiado!');
+    setTimeout(() => setCopiadoFeedback(''), 3000);
+  };
+
+  const handleCopiarLinkAssinatura = (c: any) => {
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://erp.wedistinto.com';
+    const url = c.link_assinatura || `${origin}/api/contratos/pdf?id=${c.id}`;
+    navigator.clipboard.writeText(url);
+    setCopiadoFeedback('Link de Assinatura Copiado!');
+    setTimeout(() => setCopiadoFeedback(''), 3000);
+  };
+
   const contratosFiltrados = contratos.filter((c) => {
     const tit = (c.titulo || '').toLowerCase();
     const cli = (c.cliente_nome || '').toLowerCase();
@@ -539,6 +588,30 @@ const [titulo, setTitulo] = useState('');
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end space-x-1">
+                          {/* Botão Compartilhar para Revisão */}
+                          <button
+                            onClick={() => handleAbrirShareModal(c)}
+                            className="px-2.5 py-1 bg-purple-950/80 hover:bg-purple-900/90 text-purple-300 border border-purple-500/40 rounded-lg text-xs font-bold transition flex items-center space-x-1 shadow-2xs"
+                            title="Compartilhar Link para Revisão (Sem opção de assinatura)"
+                          >
+                            <span className="material-symbols-outlined text-sm leading-none">share</span>
+                            <span className="hidden xl:inline text-[11px]">Revisão</span>
+                          </button>
+
+                          {/* Botão Enviar para Assinatura */}
+                          <button
+                            onClick={() => handleEnviarParaAssinatura(c)}
+                            className={`px-2.5 py-1 border rounded-lg text-xs font-bold transition flex items-center space-x-1 shadow-2xs ${
+                              stRaw === 'pendente_assinatura' || stRaw === 'pendente'
+                                ? 'bg-blue-950/80 text-blue-300 border-blue-500/40'
+                                : 'bg-emerald-950/80 hover:bg-emerald-900/90 text-emerald-300 border border-emerald-500/40'
+                            }`}
+                            title="Alterar status e liberar link de assinatura"
+                          >
+                            <span className="material-symbols-outlined text-sm leading-none">draw</span>
+                            <span className="hidden xl:inline text-[11px]">Enviar p/ Assinar</span>
+                          </button>
+
                           {/* Visualizar PDF em Nova Aba */}
                           <a
                             href={`/api/contratos/pdf?id=${c.id}`}
@@ -1071,6 +1144,130 @@ const [titulo, setTitulo] = useState('');
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Compartilhar para Revisão & Enviar para Assinatura */}
+      {modalShareAberta && contratoShare && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+          <div className="bg-[#0f0f13] border border-zinc-800 rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-5 text-zinc-100">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-3">
+              <div className="flex items-center space-x-2">
+                <span className="material-symbols-outlined text-purple-400">share</span>
+                <h3 className="font-bold text-white text-base">Compartilhar Contrato</h3>
+              </div>
+              <button onClick={() => setModalShareAberta(false)} className="text-zinc-400 hover:text-white">
+                <span className="material-symbols-outlined leading-none">close</span>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <span className="text-[10px] font-bold text-purple-400 uppercase tracking-wider block">CONTRATO COMERCIAL</span>
+                <h4 className="font-extrabold text-white text-sm">{contratoShare.titulo}</h4>
+                <p className="text-xs text-zinc-400 mt-0.5">Cliente: {contratoShare.cliente_nome}</p>
+              </div>
+
+              {copiadoFeedback && (
+                <div className="p-2.5 bg-emerald-950/80 border border-emerald-500/40 rounded-xl text-xs text-emerald-300 font-bold text-center">
+                  ✓ {copiadoFeedback}
+                </div>
+              )}
+
+              {/* OPÇÃO 1: LINK DE REVISÃO (SEM ASSINATURA) */}
+              <div className="bg-zinc-900/90 border border-purple-500/30 p-4 rounded-xl space-y-3">
+                <div className="flex items-center space-x-2">
+                  <span className="material-symbols-outlined text-purple-400 text-lg">visibility</span>
+                  <h5 className="font-bold text-white text-xs uppercase tracking-wider">1. Link para Revisão (Apenas Leitura)</h5>
+                </div>
+                <p className="text-xs text-zinc-400">
+                  Envie este link para o cliente conferir os dados, prazos e cláusulas. <strong>Neste link NÃO é possível assinar</strong>.
+                </p>
+
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="text"
+                    readOnly
+                    value={`${typeof window !== 'undefined' ? window.location.origin : 'https://erp.wedistinto.com'}/c/${contratoShare.id}`}
+                    className="flex-1 px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs font-mono text-zinc-300 outline-none select-all"
+                  />
+                  <button
+                    onClick={() => handleCopiarLinkRevisao(contratoShare.id)}
+                    className="px-3 py-2 bg-purple-600 hover:bg-purple-500 text-white font-bold rounded-lg text-xs transition flex items-center space-x-1 shrink-0"
+                  >
+                    <span className="material-symbols-outlined text-sm leading-none">content_copy</span>
+                    <span>Copiar</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center space-x-2 pt-1">
+                  <a
+                    href={`https://api.whatsapp.com/send?phone=${(contratoShare.cliente_telefone || '').replace(/\D/g, '')}&text=${encodeURIComponent(
+                      `Olá ${contratoShare.cliente_nome || ''}! Segue o link para REVISÃO dos dados do seu contrato (${contratoShare.titulo}):\n\n${typeof window !== 'undefined' ? window.location.origin : 'https://erp.wedistinto.com'}/c/${contratoShare.id}\n\nPor favor, confira todas as informações. Assim que você nos der o ok, liberamos o envio para a assinatura digital! 😊`
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-bold rounded-lg text-xs text-center transition flex items-center justify-center space-x-1.5"
+                  >
+                    <span className="material-symbols-outlined text-sm leading-none">chat</span>
+                    <span>Enviar Revisão no WhatsApp</span>
+                  </a>
+
+                  <a
+                    href={`/c/${contratoShare.id}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="px-3 py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-bold rounded-lg text-xs transition flex items-center space-x-1"
+                  >
+                    <span className="material-symbols-outlined text-sm leading-none">open_in_new</span>
+                    <span>Abrir</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* OPÇÃO 2: LIBERAR / ENVIAR PARA ASSINATURA */}
+              <div className="bg-zinc-900/90 border border-emerald-500/30 p-4 rounded-xl space-y-3">
+                <div className="flex items-center space-x-2">
+                  <span className="material-symbols-outlined text-emerald-400 text-lg">draw</span>
+                  <h5 className="font-bold text-white text-xs uppercase tracking-wider">2. Liberar Assinatura Eletrônica</h5>
+                </div>
+                <p className="text-xs text-zinc-400">
+                  Após o cliente revisar e aprovar, altere o status para liberar o link oficial de assinatura.
+                </p>
+
+                {(contratoShare.status || '').toLowerCase() === 'pendente_assinatura' || (contratoShare.status || '').toLowerCase() === 'pendente' ? (
+                  <div className="space-y-2">
+                    <span className="inline-block px-2.5 py-1 bg-emerald-950 text-emerald-400 border border-emerald-500/30 rounded-md text-[10px] font-bold uppercase">
+                      ✓ Assinatura Liberada
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      <input
+                        type="text"
+                        readOnly
+                        value={contratoShare.link_assinatura || `${typeof window !== 'undefined' ? window.location.origin : 'https://erp.wedistinto.com'}/api/contratos/pdf?id=${contratoShare.id}`}
+                        className="flex-1 px-3 py-2 bg-zinc-950 border border-zinc-700 rounded-lg text-xs font-mono text-zinc-300 outline-none select-all"
+                      />
+                      <button
+                        onClick={() => handleCopiarLinkAssinatura(contratoShare)}
+                        className="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs transition flex items-center space-x-1 shrink-0"
+                      >
+                        <span className="material-symbols-outlined text-sm leading-none">content_copy</span>
+                        <span>Copiar Assinatura</span>
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => handleEnviarParaAssinatura(contratoShare)}
+                    className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs transition flex items-center justify-center space-x-2 shadow-sm"
+                  >
+                    <span className="material-symbols-outlined text-base leading-none">send</span>
+                    <span>Alterar Status e Liberar Assinatura Agora</span>
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

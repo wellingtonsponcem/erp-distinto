@@ -159,6 +159,29 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
         return res.status(200).json({ ok: true, mensagem: `Cobrança de R$ ${valNum.toLocaleString('pt-BR')} gerada no financeiro (${totalParc}x)!` });
       }
 
+      // AÇÃO 4: ENVIAR PARA ASSINATURA ELETRÔNICA
+      if (action === 'enviar_assinatura') {
+        const { id, link_assinatura } = req.body;
+        if (!id) return res.status(422).json({ erro: 'ID do contrato é obrigatório' });
+
+        const c = await queryOne<any>('SELECT * FROM contratos WHERE id = $1 LIMIT 1', [id]);
+        if (!c) return res.status(404).json({ erro: 'Contrato não encontrado' });
+
+        const linkFinal = link_assinatura || c.link_assinatura || `https://erp.wedistinto.com/api/contratos/pdf?id=${id}`;
+
+        await query(
+          "UPDATE contratos SET status = 'pendente_assinatura', link_assinatura = $1 WHERE id = $2",
+          [linkFinal, id]
+        );
+
+        return res.status(200).json({
+          ok: true,
+          status: 'pendente_assinatura',
+          link_assinatura: linkFinal,
+          mensagem: 'Contrato alterado para Pendente de Assinatura com sucesso!'
+        });
+      }
+
       // AÇÃO PADRÃO: CRIAR NOVO CONTRATO
       const {
         proposta_id,
