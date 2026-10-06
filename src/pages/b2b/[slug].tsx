@@ -432,7 +432,7 @@ export default function OrcamentoB2BPublicoPage() {
             className="h-6 mx-auto mb-3 opacity-40"
             style={{ filter: 'brightness(0) invert(1)' }}
           />
-          <p className="text-[10px] text-zinc-600">Poncem Studio LTDA | CNPJ: 50.768.732/0001-63</p>
+          <p className="text-[10px] text-zinc-600">Distinto | CNPJ: 69.250.713/0001-00</p>
           <p className="text-[10px] text-zinc-600">contato@wedistinto.com | wedistinto.com</p>
         </div>
 

@@ -37,9 +37,9 @@ const LISTA_VARIAVEIS: VariableItem[] = [
   { tag: '{{CLIENTE_ENDERECO}}', descricao: 'Endereço completo do contratante', exemplo: 'Rua das Flores, 123, Vitória-ES', categoria: '👤 Cliente / Contratante' },
 
   // 🏢 DADOS DA EMPRESA / CONTRATADA
-  { tag: '{{EMPRESA_NOME}}', descricao: 'Razão social / Nome fantasia da contratada', exemplo: 'Distinto | Poncem Studio LTDA', categoria: '🏢 Empresa / Contratada' },
-  { tag: '{{EMPRESA_CNPJ}}', descricao: 'CNPJ oficial da contratada', exemplo: '50.768.732/0001-63', categoria: '🏢 Empresa / Contratada' },
-  { tag: '{{EMPRESA_ENDERECO}}', descricao: 'Endereço da sede da empresa', exemplo: 'Rod. do Sol nº 2780, Sala 1307, Vila Velha-ES', categoria: '🏢 Empresa / Contratada' },
+  { tag: '{{EMPRESA_NOME}}', descricao: 'Razão social / Nome fantasia da contratada', exemplo: 'Distinto (69.250.713 JEANE NUNES DE PONCEM FAUSTINO)', categoria: '🏢 Empresa / Contratada' },
+  { tag: '{{EMPRESA_CNPJ}}', descricao: 'CNPJ oficial da contratada', exemplo: '69.250.713/0001-00', categoria: '🏢 Empresa / Contratada' },
+  { tag: '{{EMPRESA_ENDERECO}}', descricao: 'Endereço da sede da empresa', exemplo: 'Avenida Brasil, nº 17, Quadra 39, Novo Horizonte, Serra-ES', categoria: '🏢 Empresa / Contratada' },
   { tag: '{{EMPRESA_EMAIL}}', descricao: 'E-mail oficial da empresa', exemplo: 'contato@wedistinto.com', categoria: '🏢 Empresa / Contratada' },
 
   // 💑 DADOS DOS NOIVOS / CASAL

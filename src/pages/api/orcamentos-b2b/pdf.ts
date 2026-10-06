@@ -198,7 +198,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Footer em uma unica linha
     doc.fontSize(6.5).font('DejaVu').fillColor(textSecondary)
-      .text(`Proposta criada em: ${criadoEm}  |  Poncem Studio LTDA  |  CNPJ: 50.768.732/0001-63  |  contato@wedistinto.com  |  wedistinto.com`, margin, footerY + 4, { width: contentW, lineBreak: false });
+      .text(`Proposta criada em: ${criadoEm}  |  Distinto (69.250.713 JEANE NUNES DE PONCEM FAUSTINO)  |  CNPJ: 69.250.713/0001-00  |  contato@wedistinto.com  |  wedistinto.com`, margin, footerY + 4, { width: contentW, lineBreak: false });
 
     doc.end();
   } catch (err: any) {

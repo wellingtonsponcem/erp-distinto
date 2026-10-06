@@ -68,9 +68,9 @@ export function renderMasterContractHtml(data: ContractRenderData): string {
   html = html.replace(/\{\{CLIENTE_EMAIL\}\}/g, clienteEmail);
   html = html.replace(/\{\{CLIENTE_TELEFONE\}\}/g, clienteTelefone);
   html = html.replace(/\{\{CLIENTE_ENDERECO\}\}/g, data.cliente_endereco || '');
-  html = html.replace(/\{\{EMPRESA_NOME\}\}/g, data.empresa_nome || 'Distinto | Poncem Studio (Poncem Studio LTDA)');
-  html = html.replace(/\{\{EMPRESA_CNPJ\}\}/g, data.empresa_cnpj || '50.768.732/0001-63');
-  html = html.replace(/\{\{EMPRESA_ENDERECO\}\}/g, data.empresa_endereco || 'Rod. do Sol nº 2780, sala 1307, Praia de Itaparica, Vila Velha-ES');
+  html = html.replace(/\{\{EMPRESA_NOME\}\}/g, data.empresa_nome || 'Distinto (69.250.713 JEANE NUNES DE PONCEM FAUSTINO)');
+  html = html.replace(/\{\{EMPRESA_CNPJ\}\}/g, data.empresa_cnpj || '69.250.713/0001-00');
+  html = html.replace(/\{\{EMPRESA_ENDERECO\}\}/g, data.empresa_endereco || 'Avenida Brasil, nº 17, Quadra 39, Novo Horizonte, Serra - ES, CEP 29163-331');
   html = html.replace(/\{\{EMPRESA_EMAIL\}\}/g, data.empresa_email || 'contato@wedistinto.com');
   html = html.replace(/\{\{VALOR_TOTAL\}\}/g, valorTotalStr);
   html = html.replace(/\{\{CONDICOES_PAGAMENTO\}\}/g, data.condicoes_pagamento || 'Entrada de 20% + Saldo parcelado em até 6x (dependendo do pacote selecionado).');

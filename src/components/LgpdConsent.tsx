@@ -126,9 +126,9 @@ export const LgpdConsent: React.FC<LgpdConsentProps> = ({
             <div className="p-6 overflow-y-auto space-y-5 text-xs leading-relaxed text-zinc-300 font-sans">
               <div className="p-3 bg-zinc-950 rounded-xl border border-zinc-800/80 text-zinc-400">
                 <p className="font-bold text-white mb-1">Empresa Controladora dos Dados:</p>
-                <p>Distinto | Poncem Studio (Poncem Studio LTDA)</p>
-                <p>CNPJ: 50.768.732/0001-63 | E-mail DPO: <span className="text-[#c5a880]">contato@wedistinto.com</span></p>
-                <p>Sede: Rod. do Sol nº 2780, Sala 1307, Praia de Itaparica, Vila Velha - ES</p>
+                <p>Distinto (69.250.713 JEANE NUNES DE PONCEM FAUSTINO)</p>
+                <p>CNPJ: 69.250.713/0001-00 | E-mail DPO: <span className="text-[#c5a880]">contato@wedistinto.com</span></p>
+                <p>Sede: Avenida Brasil, nº 17, Quadra 39, Novo Horizonte, Serra - ES, CEP 29163-331</p>
               </div>
 
               <div>
