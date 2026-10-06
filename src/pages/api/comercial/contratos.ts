@@ -9,24 +9,26 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
 
   if (method === 'GET') {
     try {
-      const rows = await query(`
-        SELECT c.*, p.slug as proposta_slug, p.titulo as proposta_titulo
-        FROM contratos c
-        LEFT JOIN propostas p ON c.proposta_id = p.id
-        ORDER BY c.id DESC
-      `);
+      const { id } = req.query;
 
-      const formatados = rows.map((r: any) => {
+      if (id) {
+        const r: any = await queryOne(`
+          SELECT c.*, p.slug as proposta_slug, p.titulo as proposta_titulo
+          FROM contratos c
+          LEFT JOIN propostas p ON c.proposta_id = p.id
+          WHERE c.id = $1 LIMIT 1
+        `, [String(id)]);
+
+        if (!r) return res.status(404).json({ erro: 'Contrato não encontrado' });
+
         let dadosParsed: any = {};
         try {
           dadosParsed = typeof r.dados_json === 'string' ? JSON.parse(r.dados_json) : (r.dados_json || {});
         } catch (e) {}
 
         const clienteNome = r.cliente_nome || r.cliente || 'Cliente Contratante';
-        const dataCriacao = r.criado_em || r.created_at;
         const valTotalNum = parseFloat(r.valor_total || r.valor || 0);
 
-        // Se não tiver contrato_texto pronto, gerar com o template master oficial
         if (!dadosParsed.contrato_texto) {
           dadosParsed.contrato_texto = renderMasterContractHtml({
             id: r.id,
@@ -49,6 +51,49 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
           });
         }
 
+        return res.status(200).json({
+          id: r.id,
+          proposta_id: r.proposta_id || null,
+          proposta_slug: r.proposta_slug || null,
+          proposta_titulo: r.proposta_titulo || null,
+          cliente_id: r.cliente_id || null,
+          titulo: r.titulo || `Contrato - ${clienteNome}`,
+          cliente_nome: clienteNome,
+          cliente_cpf_cnpj: r.cliente_cpf_cnpj || dadosParsed.signatario_1?.cpf || '',
+          cliente_email: r.cliente_email || dadosParsed.signatario_1?.email || '',
+          cliente_telefone: r.cliente_telefone || dadosParsed.signatario_1?.telefone || '',
+          valor_total: valTotalNum,
+          status: r.status || 'rascunho',
+          assinafy_document_id: r.assinafy_document_id || r.documento_assinatura_id || null,
+          assinafy_status: r.assinafy_status || null,
+          link_assinatura: r.link_assinatura || dadosParsed.link_assinatura || null,
+          asaas_cobranca_gerada: r.asaas_cobranca_gerada || 0,
+          criado_em: r.criado_em || r.created_at,
+          created_at: r.criado_em || r.created_at,
+          dados: dadosParsed,
+        });
+      }
+
+      const rows = await query(`
+        SELECT c.*, p.slug as proposta_slug, p.titulo as proposta_titulo
+        FROM contratos c
+        LEFT JOIN propostas p ON c.proposta_id = p.id
+        ORDER BY c.id DESC
+      `);
+
+      const formatados = rows.map((r: any) => {
+        let dadosParsed: any = {};
+        try {
+          dadosParsed = typeof r.dados_json === 'string' ? JSON.parse(r.dados_json) : (r.dados_json || {});
+        } catch (e) {}
+
+        const clienteNome = r.cliente_nome || r.cliente || 'Cliente Contratante';
+        const dataCriacao = r.criado_em || r.created_at;
+        const valTotalNum = parseFloat(r.valor_total || r.valor || 0);
+
+        // Remover contrato_texto pesado da listagem para carregamento ultra-rápido
+        const { contrato_texto, ...dadosLeves } = dadosParsed;
+
         return {
           id: r.id,
           proposta_id: r.proposta_id || null,
@@ -68,7 +113,7 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
           asaas_cobranca_gerada: r.asaas_cobranca_gerada || 0,
           criado_em: dataCriacao,
           created_at: dataCriacao,
-          dados: dadosParsed,
+          dados: dadosLeves,
         };
       });
 
