@@ -30,6 +30,27 @@ export interface ContractRenderData {
   clausulas_personalizadas?: string;
   anexo_escopo?: string;
   custom_template_html?: string;
+  data_assinatura?: string;
+}
+
+function getExtensoDate(dateStr?: string): string {
+  if (dateStr && dateStr.includes(' de ')) return dateStr;
+  let now = new Date();
+  if (dateStr) {
+    const parts = dateStr.split(/[-/]/);
+    if (parts.length === 3) {
+      if (parts[0].length === 4) {
+        now = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+      } else {
+        now = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+      }
+    }
+  }
+  const meses = [
+    'janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho',
+    'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'
+  ];
+  return `${now.getDate()} de ${meses[now.getMonth()]} de ${now.getFullYear()}`;
 }
 
 export function renderMasterContractHtml(data: ContractRenderData): string {
@@ -59,6 +80,8 @@ export function renderMasterContractHtml(data: ContractRenderData): string {
   const clienteEmail = data.cliente_email || data.noivo_email || data.noiva_email || '';
   const clienteTelefone = data.cliente_telefone || data.noivo_telefone || data.noiva_telefone || '';
 
+  const dataAssinaturaStr = getExtensoDate(data.data_assinatura);
+
   let html = rawHtml;
 
   // Substituição de todas as Variáveis Padrão {{TAG}}
@@ -73,15 +96,16 @@ export function renderMasterContractHtml(data: ContractRenderData): string {
   html = html.replace(/\{\{CLIENTE_TELEFONE_INFO\}\}/g, clienteTelefone ? `, telefone: ${clienteTelefone}` : '');
   html = html.replace(/\{\{CLIENTE_ENDERECO_INFO\}\}/g, data.cliente_endereco ? `, residente em: ${data.cliente_endereco}` : '');
 
-  html = html.replace(/\{\{EMPRESA_NOME\}\}/g, data.empresa_nome || 'Distinto (69.250.713 JEANE NUNES DE PONCEM FAUSTINO)');
+  html = html.replace(/\{\{EMPRESA_NOME\}\}/g, data.empresa_nome || '69.250.713 JEANE NUNES DE PONCEM FAUSTINO');
   html = html.replace(/\{\{EMPRESA_CNPJ\}\}/g, data.empresa_cnpj || '69.250.713/0001-00');
-  html = html.replace(/\{\{EMPRESA_ENDERECO\}\}/g, data.empresa_endereco || 'Avenida Brasil, nº 17, Quadra 39, Novo Horizonte, Serra - ES, CEP 29163-331');
+  html = html.replace(/\{\{EMPRESA_ENDERECO\}\}/g, data.empresa_endereco || 'Avenida Brasil, nº 17, Quadra 39, Bairro Novo Horizonte, Serra/ES, CEP 29163-331');
   html = html.replace(/\{\{EMPRESA_EMAIL\}\}/g, data.empresa_email || 'contato@wedistinto.com');
   html = html.replace(/\{\{VALOR_TOTAL\}\}/g, valorTotalStr);
-  html = html.replace(/\{\{CONDICOES_PAGAMENTO\}\}/g, data.condicoes_pagamento || 'Entrada de 20% + Saldo parcelado em até 6x.');
-  html = html.replace(/\{\{TITULO_CONTRATO\}\}/g, data.titulo || 'Contrato de Prestação de Serviços');
-  html = html.replace(/\{\{DATA_EVENTO\}\}/g, data.data_evento || 'a ser definida em comum acordo');
-  html = html.replace(/\{\{LOCAL_EVENTO\}\}/g, data.local_evento || 'a ser definido em comum acordo');
+  html = html.replace(/\{\{CONDICOES_PAGAMENTO\}\}/g, data.condicoes_pagamento || 'Reserva de R$ 150,00 no ato da contratação + Saldo de R$ 150,00 até a entrega das fotos.');
+  html = html.replace(/\{\{TITULO_CONTRATO\}\}/g, data.titulo || 'Contrato de Prestação de Serviços Fotográficos - Ensaio Pré-Wedding');
+  html = html.replace(/\{\{DATA_EVENTO\}\}/g, data.data_evento || '09/10/2026');
+  html = html.replace(/\{\{LOCAL_EVENTO\}\}/g, data.local_evento || 'a ser definido em comum acordo na Grande Vitória/ES');
+  html = html.replace(/\{\{DATA_ASSINATURA\}\}/g, dataAssinaturaStr);
 
   // Variáveis dos Noivos / Casal
   html = html.replace(/\{\{NOIVO_NOME\}\}/g, data.noivo_nome || '');
@@ -104,15 +128,6 @@ export function renderMasterContractHtml(data: ContractRenderData): string {
   } else {
     html = html.replace(/\{\{CLAUSULAS_PERSONALIZADAS_SECTION\}\}/g, '');
     html = html.replace(/\{\{CLAUSULAS_PERSONALIZADAS\}\}/g, '');
-  }
-
-  // Retrocompatibilidade se o template ainda contiver blocos antigos
-  if (html.includes('Jeane Nunes,') || html.includes('wemngton Poncem,')) {
-    const contratanteBlock = `<strong>${clienteNome}</strong>, portador(a) do CPF/CNPJ nº <strong>${clienteCpfCnpj}</strong>${clienteEmail ? `, e-mail ${clienteEmail}` : ''}, doravante denominado(a) simplesmente <strong>CONTRATANTE</strong>.`;
-    html = html.replace(
-      /<p class="c164">[\s\S]*?<\/p>/,
-      `<p class="c164">${contratanteBlock}</p>`
-    );
   }
 
   return html;

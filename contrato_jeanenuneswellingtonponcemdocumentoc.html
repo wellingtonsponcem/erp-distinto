@@ -17,8 +17,8 @@
       padding: 0;
       background-color: #f1f5f9;
       font-family: Arial, Helvetica, sans-serif;
-      font-size: 10pt;
-      line-height: 1.6;
+      font-size: 9.5pt;
+      line-height: 1.55;
       color: #1e293b;
       -webkit-print-color-adjust: exact;
       print-color-adjust: exact;
@@ -51,7 +51,7 @@
       align-items: flex-end;
       border-bottom: 2px solid #0f172a;
       padding-bottom: 12px;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
     .brand-title {
       font-size: 18pt;
@@ -86,19 +86,28 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       color: #0f172a;
-      margin: 24px 0 20px 0;
+      margin: 20px 0 4px 0;
+    }
+    .doc-subtitle {
+      font-size: 10.5pt;
+      font-weight: 700;
+      text-align: center;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 20px;
     }
     .intro-text {
       font-size: 9.5pt;
       margin-bottom: 16px;
       text-align: justify;
+      line-height: 1.6;
     }
     .party-card {
       background-color: #f8fafc;
       border: 1px solid #e2e8f0;
       border-left: 4px solid #0f172a;
       padding: 12px 16px;
-      margin-bottom: 16px;
+      margin-bottom: 12px;
       border-radius: 0 6px 6px 0;
     }
     .party-title {
@@ -120,20 +129,21 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
       color: #0f172a;
-      margin-top: 22px;
-      margin-bottom: 10px;
+      margin-top: 20px;
+      margin-bottom: 8px;
       padding-bottom: 4px;
       border-bottom: 1px solid #cbd5e1;
     }
     p.clause {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       text-align: justify;
       font-size: 9.5pt;
     }
     ul.clause-list {
-      margin: 6px 0 12px 20px;
+      margin: 6px 0 10px 20px;
       padding-left: 0;
       font-size: 9.5pt;
+      list-style-type: none;
     }
     ul.clause-list li {
       margin-bottom: 4px;
@@ -147,14 +157,21 @@
       font-size: 9.5pt;
     }
     .signatures-section {
-      margin-top: 40px;
+      margin-top: 36px;
       page-break-inside: avoid;
+    }
+    .date-location-stamp {
+      text-align: center;
+      font-size: 9.5pt;
+      font-weight: 600;
+      color: #334155;
+      margin-bottom: 28px;
     }
     .signatures-grid {
       display: flex;
       justify-content: space-between;
-      gap: 30px;
-      margin-top: 36px;
+      gap: 20px;
+      margin-top: 24px;
     }
     .signature-box {
       flex: 1;
@@ -165,12 +182,12 @@
       margin-bottom: 8px;
     }
     .signature-name {
-      font-size: 9pt;
+      font-size: 8.5pt;
       font-weight: 700;
       color: #0f172a;
     }
     .signature-role {
-      font-size: 8pt;
+      font-size: 7.5pt;
       color: #64748b;
       text-transform: uppercase;
       font-weight: 600;
@@ -193,88 +210,159 @@
         <div class="brand-sub">Estúdio de Fotografia & Audiovisual</div>
       </div>
       <div class="contract-badge">
-        CONTRATO Nº {{NUMERO_CONTRATO}}
+        CONTRATO Nº: {{NUMERO_CONTRATO}}
       </div>
     </div>
 
-    <div class="doc-title">CONTRATO DE PRESTAÇÃO DE SERVIÇOS</div>
+    <div class="doc-title">CONTRATO DE PRESTAÇÃO DE SERVIÇOS FOTOGRÁFICOS</div>
+    <div class="doc-subtitle">ENSAIO PRÉ-WEDDING</div>
 
-    <p class="intro-text">Pelo presente instrumento particular de prestação de serviços, de um lado:</p>
+    <p class="intro-text">Pelo presente instrumento particular, de um lado, os CONTRATANTES, devidamente qualificados neste instrumento, e, de outro, a CONTRATADA, têm entre si justo e contratado o presente Contrato de Prestação de Serviços Fotográficos – Ensaio Pré-Wedding, que será regido pelas cláusulas e condições abaixo estabelecidas.</p>
+
+    <div class="section-title">1. DAS PARTES</div>
+    
+    <div class="party-card">
+      <div class="party-title">1.1. CONTRATANTES</div>
+      <div class="party-body">
+        <strong>{{CLIENTE_NOME}}</strong>, portadores dos CPFs nº <strong>{{CLIENTE_CPF_CNPJ}}</strong>, respectivamente, com endereço de e-mail <strong>{{CLIENTE_EMAIL}}</strong> e telefone para contato <strong>{{CLIENTE_TELEFONE}}</strong>, doravante denominados, em conjunto, <strong>CONTRATANTES</strong>.
+      </div>
+    </div>
 
     <div class="party-card">
-      <div class="party-title">CONTRATANTE(S):</div>
+      <div class="party-title">1.2. CONTRATADA</div>
       <div class="party-body">
-        <strong>{{CLIENTE_NOME}}</strong>, portador(a) do CPF/CNPJ nº <strong>{{CLIENTE_CPF_CNPJ}}</strong>{{CLIENTE_EMAIL_INFO}}{{CLIENTE_TELEFONE_INFO}}{{CLIENTE_ENDERECO_INFO}}, doravante denominado(a) simplesmente <strong>CONTRATANTE</strong>.
+        <strong>DISTINTO ESTÚDIO DE FOTOGRAFIA & AUDIOVISUAL</strong>, razão social <strong>{{EMPRESA_NOME}}</strong>, inscrita no CNPJ sob o nº <strong>{{EMPRESA_CNPJ}}</strong>, com sede na <strong>{{EMPRESA_ENDERECO}}</strong>, e-mail <strong>{{EMPRESA_EMAIL}}</strong>, doravante denominada simplesmente <strong>CONTRATADA</strong>.
       </div>
     </div>
-
-    <div class="party-card">
-      <div class="party-title">CONTRATADA:</div>
-      <div class="party-body">
-        <strong>{{EMPRESA_NOME}}</strong>, inscrita no CNPJ sob o nº <strong>{{EMPRESA_CNPJ}}</strong>, com sede em <strong>{{EMPRESA_ENDERECO}}</strong>, e-mail: <strong>{{EMPRESA_EMAIL}}</strong>, doravante denominada <strong>CONTRATADA</strong>.
-      </div>
-    </div>
-
-    <p class="intro-text">As partes acima qualificadas têm, entre si, justo e acordado o presente Contrato de Prestação de Serviços, regido pelas cláusulas e condições a seguir discriminadas:</p>
 
     <div class="section-title">CLÁUSULA PRIMEIRA — DO OBJETO</div>
-    <p class="clause">1.1. O presente contrato tem por objeto a prestação de serviços profissionais de cobertura fotográfica e/ou produção audiovisual para <strong>{{TITULO_CONTRATO}}</strong>, em conformidade com as especificações descritas neste instrumento e na proposta comercial contratada.</p>
-
-    <div class="section-title">CLÁUSULA SEGUNDA — DO LOCAL E DATA DE EXECUÇÃO</div>
-    <p class="clause">2.1. Os serviços contratados serão executados na data prevista de <strong>{{DATA_EVENTO}}</strong>, no local <strong>{{LOCAL_EVENTO}}</strong>.</p>
-    <p class="clause">2.2. A duração padrão da cobertura será a especificada na proposta ou no escopo do contrato, podendo ser ajustada mediante comum acordo entre as partes.</p>
-    <p class="clause">2.3. A CONTRATADA não se responsabiliza por atrasos na execução decorrentes de condições climáticas adversas, falhas no fornecimento de energia elétrica no local ou fatores externos de força maior, comprometendo-se a buscar alternativas viáveis em conjunto com o CONTRATANTE.</p>
-
-    <div class="section-title">CLÁUSULA TERCEIRA — DO VALOR E DAS CONDIÇÕES DE PAGAMENTO</div>
-    <p class="clause">3.1. Pela prestação dos serviços objeto deste contrato, o CONTRATANTE pagará à CONTRATADA a quantia total de <strong>{{VALOR_TOTAL}}</strong>.</p>
-    <div class="highlight-box">
-      <strong>Condições de Pagamento:</strong> {{CONDICOES_PAGAMENTO}}
-    </div>
-    <p class="clause">3.2. Em caso de atraso no pagamento de qualquer parcela, incidirá multa moratória de 2% (dois por cento) sobre o valor inadimplido, acrescida de juros de mora de 1% (um por cento) ao mês e correção monetária.</p>
-
-    <div class="section-title">CLÁUSULA QUARTA — DAS ENTREGAS E PRAZOS</div>
-    <p class="clause">4.1. A CONTRATADA entregará ao CONTRATANTE o material fotográfico e/ou audiovisual devidamente editado e tratado em alta resolução.</p>
-    <p class="clause">4.2. Os prazos estimados para entrega são:</p>
+    <p class="clause">1.1. O presente contrato tem por objeto a prestação de serviços profissionais de fotografia pela CONTRATADA aos CONTRATANTES, destinados à realização de Ensaio Fotográfico Pré-Wedding.</p>
+    <p class="clause">1.2. O serviço contratado compreende:</p>
     <ul class="clause-list">
-      <li><strong>Prévia de Fotos (se contratada):</strong> até 48 horas úteis após a realização do evento.</li>
-      <li><strong>Fotos para Seleção / Ensaio:</strong> de 10 a 15 dias úteis após o ensaio ou evento.</li>
-      <li><strong>Entrega Final dos Arquivos Digitais:</strong> até 60 (sessenta) dias úteis a contar do evento.</li>
-      <li><strong>Álbuns Físicos / Impressões (se aplicável):</strong> até 60 dias úteis a contar da aprovação final do layout pelo CONTRATANTE.</li>
+      <li><strong>a)</strong> realização de uma sessão fotográfica na data e local definidos neste instrumento;</li>
+      <li><strong>b)</strong> direção e orientação dos CONTRATANTES durante a sessão, dentro da proposta artística e técnica da CONTRATADA;</li>
+      <li><strong>c)</strong> captação de imagens digitais;</li>
+      <li><strong>d)</strong> seleção e tratamento profissional das imagens;</li>
+      <li><strong>e)</strong> entrega de 20 (vinte) fotografias digitais finais, em alta resolução;</li>
+      <li><strong>f)</strong> disponibilização das fotografias por meio de galeria ou plataforma digital indicada pela CONTRATADA.</li>
     </ul>
-    <p class="clause">4.3. A CONTRATADA manterá backup de segurança de todo o material entregue pelo período mínimo de 90 (noventa) dias após a entrega final.</p>
+    <p class="clause">1.3. O presente contrato contempla exclusivamente os serviços expressamente descritos nesta cláusula, não estando incluídos serviços, produtos ou horas adicionais que não tenham sido previamente acordados entre as partes.</p>
 
-    <div class="section-title">CLÁUSULA QUINTA — DA AUTORIZAÇÃO DE USO DE IMAGEM</div>
-    <p class="clause">5.1. O CONTRATANTE autoriza expressamente e a título gratuito a utilização de suas imagens capturadas durante os serviços para fins de divulgação do portfólio profissional da CONTRATADA em mídias digitais, redes sociais, site institucional e materiais promocionais do estúdio Distinto.</p>
-    <p class="clause">5.2. Caso o CONTRATANTE deseje restringir a divulgação de imagens específicas, deverá comunicar a CONTRATADA por escrito.</p>
+    <div class="section-title">CLÁUSULA SEGUNDA — DA DATA, LOCAL E DURAÇÃO</div>
+    <p class="clause">2.1. <strong>Data:</strong> o ensaio será realizado no dia <strong>{{DATA_EVENTO}}</strong>.</p>
+    <p class="clause">2.2. <strong>Local:</strong> o local do ensaio será definido em comum acordo entre as partes e deverá estar situado dentro dos limites da Grande Vitória/ES, compreendendo, para fins deste contrato, Vitória, Vila Velha, Serra, Cariacica, Viana, Fundão ou Guarapari.</p>
+    <p class="clause">2.3. O endereço definitivo do ensaio deverá ser informado e confirmado pelas partes com antecedência suficiente para organização da equipe e logística.</p>
+    <p class="clause">2.4. Caso os CONTRATANTES optem por realizar o ensaio em local situado fora da área prevista no item 2.2, poderão ser cobrados valores adicionais referentes a deslocamento, combustível, estacionamento, pedágios, transporte, hospedagem ou outras despesas necessárias à execução do serviço.</p>
+    <p class="clause">2.5. Eventuais despesas adicionais deverão ser previamente informadas e aprovadas pelos CONTRATANTES.</p>
+    <p class="clause">2.6. O horário previamente combinado deverá ser rigorosamente observado pelos CONTRATANTES. Eventuais atrasos poderão reduzir proporcionalmente o tempo disponível para a realização da sessão, sem que isso gere obrigação de compensação, desconto ou restituição de valores por parte da CONTRATADA.</p>
+    <p class="clause">2.7. Caso o atraso dos CONTRATANTES ultrapasse período razoável e comprometa a execução do ensaio ou a disponibilidade da equipe, a CONTRATADA poderá considerar a sessão encerrada, sem prejuízo dos valores já contratados.</p>
 
-    <div class="section-title">CLÁUSULA SEXTA — DAS OBRIGAÇÕES E RESCISÃO</div>
-    <p class="clause">6.1. O CONTRATANTE compromete-se a disponibilizar alimentação adequada à equipe técnica caso a duração da cobertura ultrapasse 4 (quatro) horas contínuas.</p>
-    <p class="clause">6.2. Em caso de cancelamento unilateral imotivado por parte do CONTRATANTE com menos de 30 (trinta) dias da data do evento, o sinal pago não será reembolsado, servindo como cláusula penal compensatória pela reserva da data. Em cancelamentos com antecedência superior a 30 dias, haverá retenção de 20% do valor total a título de taxa administrativa.</p>
+    <div class="section-title">CLÁUSULA TERCEIRA — DAS CONDIÇÕES CLIMÁTICAS E REAGENDAMENTO</div>
+    <p class="clause">3.1. Considerando que o ensaio poderá ser realizado em ambiente externo e que a proposta fotográfica depende de condições adequadas de luz e segurança, a realização da sessão estará sujeita às condições climáticas.</p>
+    <p class="clause">3.2. Em caso de chuva intensa, tempestade, ventos fortes, risco à segurança, condições climáticas que impossibilitem a realização do ensaio ou outras circunstâncias externas que comprometam tecnicamente o trabalho, as partes poderão realizar o reagendamento da sessão, sem aplicação de multa, mediante disponibilidade de agenda.</p>
+    <p class="clause">3.3. A decisão de reagendamento por condições climáticas deverá ser tomada, sempre que possível, em conjunto entre as partes, considerando a segurança da equipe, dos CONTRATANTES e a qualidade técnica do resultado.</p>
+    <p class="clause">3.4. A ocorrência de chuva ou alteração climática durante a sessão não implicará automaticamente em devolução dos valores pagos, especialmente quando parte significativa do serviço já tiver sido executada.</p>
+    <p class="clause">3.5. Caso o reagendamento seja necessário, será considerada a primeira data disponível na agenda da CONTRATADA que seja compatível com a disponibilidade dos CONTRATANTES.</p>
+    <p class="clause">3.6. Caso os CONTRATANTES não tenham disponibilidade nas datas oferecidas pela CONTRATADA, a situação será tratada conforme as disposições de cancelamento previstas neste contrato.</p>
 
-    {{CLAUSULAS_PERSONALIZADAS_SECTION}}
+    <div class="section-title">CLÁUSULA QUARTA — DO VALOR E DAS CONDIÇÕES DE PAGAMENTO</div>
+    <p class="clause">4.1. Pela prestação dos serviços descritos neste contrato, os CONTRATANTES pagarão à CONTRATADA o valor total de <strong>{{VALOR_TOTAL}}</strong>.</p>
+    <div class="highlight-box">
+      <strong>4.2. O pagamento será realizado da seguinte forma:</strong><br>
+      a) <strong>Reserva de data:</strong> R$ 150,00 (cento e cinquenta reais), pagos no ato da contratação;<br>
+      b) <strong>Saldo:</strong> R$ 150,00 (cento e cinquenta reais), pagos até o momento da entrega das fotografias finais.
+    </div>
+    <p class="clause">4.3. A reserva da data somente será considerada efetivada após a confirmação do pagamento do valor previsto na alínea “a” do item 4.2.</p>
+    <p class="clause">4.4. A data reservada é vinculada aos CONTRATANTES e implica bloqueio de agenda da CONTRATADA, podendo impedir a contratação de outros trabalhos para o mesmo período.</p>
+    <p class="clause">4.5. O não pagamento do saldo na data estabelecida poderá suspender a disponibilização dos arquivos finais até a regularização do pagamento.</p>
 
-    <div class="section-title">CLÁUSULA SÉTIMA — DO FORO</div>
-    <p class="clause">7.1. Fica eleito o foro da Comarca de Serra/ES ou Vitória/ES para dirimir quaisquer controvérsias decorrentes do presente instrumento, com renúncia expressa a qualquer outro, por mais privilegiado que seja.</p>
+    <div class="section-title">CLÁUSULA QUINTA — DO CANCELAMENTO E DA DESISTÊNCIA</div>
+    <p class="clause">5.1. Em caso de desistência ou cancelamento por iniciativa dos CONTRATANTES, o valor pago a título de reserva de data não será automaticamente restituído, considerando que a CONTRATADA realizou o bloqueio de agenda e deixou de disponibilizar a data para outros clientes.</p>
+    <p class="clause">5.2. Caso o cancelamento ocorra com antecedência suficiente para possibilitar a reorganização da agenda e a contratação de outro serviço para a mesma data, as partes poderão negociar a restituição parcial do valor pago, descontadas eventuais despesas já realizadas pela CONTRATADA.</p>
+    <p class="clause">5.3. Caso o cancelamento ocorra próximo à data do ensaio, especialmente quando inviabilizar a contratação de outro trabalho para o período reservado, o valor referente à reserva poderá ser integralmente retido pela CONTRATADA.</p>
+    <p class="clause">5.4. Em caso de desistência após a realização total ou parcial do ensaio, não haverá devolução proporcional automática dos valores, considerando a execução do serviço, a mobilização da equipe e os custos envolvidos.</p>
+    <p class="clause">5.5. Eventual remarcação solicitada pelos CONTRATANTES será tratada preferencialmente como reagendamento, desde que haja disponibilidade de agenda da CONTRATADA.</p>
+
+    <div class="section-title">CLÁUSULA SEXTA — DOS PRAZOS, SELEÇÃO E ENTREGA</div>
+    <p class="clause">6.1. A CONTRATADA disponibilizará aos CONTRATANTES uma seleção inicial de imagens, quando aplicável, em até <strong>36 (trinta e seis) horas</strong> após a realização da sessão.</p>
+    <p class="clause">6.2. Os CONTRATANTES deverão realizar a seleção das fotografias dentro do prazo informado pela CONTRATADA.</p>
+    <p class="clause">6.3. A entrega final será composta por 20 (vinte) fotografias selecionadas pelos CONTRATANTES, que receberão tratamento profissional de cor, exposição, contraste e demais ajustes necessários à composição final da imagem.</p>
+    <p class="clause">6.4. Após o recebimento da seleção definitiva realizada pelos CONTRATANTES, a CONTRATADA terá o prazo de até <strong>10 (dez) dias úteis</strong> para concluir o tratamento e disponibilizar as fotografias finais.</p>
+    <p class="clause">6.5. O prazo previsto no item anterior será automaticamente prorrogado pelo período correspondente caso os CONTRATANTES atrasem o envio da seleção ou de informações necessárias à continuidade do trabalho.</p>
+    <p class="clause">6.6. O tratamento fotográfico seguirá a identidade estética e técnica da CONTRATADA. Alterações posteriores que impliquem mudança de estilo, retoques adicionais ou modificações não previstas no escopo poderão ser consideradas serviços extras e, se houver cobrança, serão previamente informadas aos CONTRATANTES.</p>
+    <p class="clause">6.7. A CONTRATADA não se obriga a entregar arquivos RAW, negativos digitais, arquivos de projeto, arquivos não tratados ou imagens descartadas durante o processo de seleção e edição.</p>
+
+    <div class="section-title">CLÁUSULA SÉTIMA — DO BACKUP E DA GUARDA DOS ARQUIVOS</div>
+    <p class="clause">7.1. A CONTRATADA manterá uma cópia de segurança dos arquivos finais pelo prazo de 90 (noventa) dias, contados a partir da data da entrega final.</p>
+    <p class="clause">7.2. Após o término desse prazo, a CONTRATADA poderá excluir definitivamente os arquivos, não permanecendo obrigada à sua guarda ou recuperação.</p>
+    <p class="clause">7.3. Recomenda-se aos CONTRATANTES que realizem o download e mantenham cópias de segurança das fotografias recebidas em mais de um dispositivo ou serviço de armazenamento.</p>
+    <p class="clause">7.4. A CONTRATADA não se responsabilizará pela perda dos arquivos após o prazo established no item 7.1.</p>
+
+    <div class="section-title">CLÁUSULA OITAVA — DA RESPONSABILIDADE DOS CONTRATANTES</div>
+    <p class="clause">8.1. Os CONTRATANTES são responsáveis por fornecer corretamente todas as informações necessárias à execução do serviço, incluindo endereço, horário, referências do local e demais informações previamente solicitadas.</p>
+    <p class="clause">8.2. Os CONTRATANTES deverão comparecer ao ensaio no horário previamente estabelecido, em condições adequadas para a realização da sessão.</p>
+    <p class="clause">8.3. Eventuais despesas pessoais dos CONTRATANTES, tais como transporte, alimentação, estacionamento, ingressos, taxas de acesso ou autorizações necessárias ao local escolhido, serão de responsabilidade dos próprios CONTRATANTES, salvo quando expressamente incluídas no orçamento.</p>
+    <p class="clause">8.4. Caso o local escolhido exija autorização, reserva ou pagamento de taxa para realização de fotografias profissionais, caberá aos CONTRATANTES providenciar ou custear essa autorização, salvo acordo diferente entre as partes.</p>
+
+    <div class="section-title">CLÁUSULA NONA — DA RESPONSABILIDADE DA CONTRATADA E CASOS DE FORÇA MAIOR</div>
+    <p class="clause">9.1. A CONTRATADA compromete-se a executar os serviços com zelo, profissionalismo e observância das boas práticas técnicas da atividade fotográfica.</p>
+    <p class="clause">9.2. A CONTRATADA não será responsabilizada por atrasos, impossibilidade de execução ou prejuízos decorrentes de acontecimentos imprevisíveis ou inevitáveis, incluindo, mas não se limitando a, acidentes, enfermidades, problemas de transporte, desastres naturais, interdições, restrições impostas por autoridades, falhas graves de infraestrutura ou outras situações caracterizadas como caso fortuito ou força maior.</p>
+    <p class="clause">9.3. Em situações excepcionais que impeçam a realização do serviço, a CONTRATADA deverá comunicar os CONTRATANTES assim que possível e, sempre que viável, buscar solução alternativa, incluindo a indicação de profissional substituto de confiança ou o reagendamento da sessão.</p>
+    <p class="clause">9.4. Caso a substituição por outro profissional seja necessária e aceita pelos CONTRATANTES, serão preservadas, na medida do possível, as condições originalmente contratadas.</p>
+
+    <div class="section-title">CLÁUSULA DÉCIMA — DOS DIREITOS AUTORAIS</div>
+    <p class="clause">10.1. As fotografias produzidas pela CONTRATADA são protegidas pela Lei nº 9.610/1998 (Lei de Direitos Autorais), permanecendo a autoria e os direitos autorais da obra fotográfica vinculados à CONTRATADA.</p>
+    <p class="clause">10.2. A contratação dos serviços não implica cessão dos direitos autorais das fotografias aos CONTRATANTES.</p>
+    <p class="clause">10.3. Os CONTRATANTES recebem autorização para utilizar as fotografias entregues para fins pessoais, incluindo armazenamento, impressão e compartilhamento em redes sociais, desde que preservada a integridade artística da obra e, preferencialmente, mantida a identificação/autoria da CONTRATADA.</p>
+    <p class="clause">10.4. Não é permitida a utilização das fotografias entregues para fins comerciais, publicitários, editoriais ou para promoção de produtos e serviços de terceiros sem autorização prévia e expressa da CONTRATADA.</p>
+
+    <div class="section-title">CLÁUSULA DÉCIMA PRIMEIRA — DA AUTORIZAÇÃO DE USO DE IMAGEM</div>
+    <p class="clause">11.1. Os CONTRATANTES autorizam a CONTRATADA, de forma gratuita, a utilizar as imagens produzidas durante o ensaio para fins de divulgação de seu trabalho profissional.</p>
+    <p class="clause">11.2. A autorização compreende a utilização em portfólio, website, redes sociais, materiais institucionais, apresentações comerciais, anúncios e demais canais de comunicação relacionados à atividade profissional da CONTRATADA.</p>
+    <p class="clause">11.3. A utilização das imagens terá finalidade exclusivamente profissional e de divulgação do trabalho fotográfico, não podendo a CONTRATADA utilizar as imagens de forma ofensiva, vexatória ou que prejudique a honra, imagem ou reputação dos CONTRATANTES.</p>
+    <p class="clause">11.4. Caso os CONTRATANTES não autorizem a utilização de suas imagens para divulgação, deverão manifestar expressamente essa decisão antes da realização do ensaio, ficando a autorização registrada neste contrato como <strong>[X] AUTORIZADA &nbsp;&nbsp;&nbsp; [ &nbsp;] NÃO AUTORIZADA</strong>.</p>
+
+    <div class="section-title">CLÁUSULA DÉCIMA SEGUNDA — DA PROTEÇÃO DE DADOS (LGPD)</div>
+    <p class="clause">12.1. Os dados pessoais fornecidos pelos CONTRATANTES serão utilizados pela CONTRATADA exclusivamente para fins relacionados à execução deste contrato, comunicação, organização do serviço, emissão de documentos e cumprimento de obrigações legais.</p>
+    <p class="clause">12.2. A CONTRATADA compromete-se a adotar medidas razoáveis para preservar a segurança e a confidencialidade dos dados pessoais recebidos, observando a legislação aplicável, incluindo a Lei Geral de Proteção de Dados Pessoais — Lei nº 13.709/2018 (LGPD).</p>
+
+    <div class="section-title">CLÁUSULA DÉCIMA TERCEIRA — DAS DISPOSIÇÕES GERAIS</div>
+    <p class="clause">13.1. Qualquer alteração no escopo, data, local, quantidade de fotografias ou demais condições originalmente contratadas deverá ser previamente acordada entre as partes.</p>
+    <p class="clause">13.2. Serviços adicionais solicitados pelos CONTRATANTES após a contratação poderão ser cobrados separadamente, mediante prévia aprovação.</p>
+    <p class="clause">13.3. A eventual tolerância de uma das partes quanto ao descumprimento de qualquer obrigação prevista neste contrato não constituirá renúncia ao direito de exigir o seu cumprimento posteriormente.</p>
+    <p class="clause">13.4. Este contrato representa o acordo entre as partes quanto ao serviço nele descrito, substituindo eventuais entendimentos anteriores que sejam incompatíveis com suas disposições.</p>
+    <p class="clause">13.5. A comunicação realizada por meios eletrônicos, incluindo e-mail e aplicativos de mensagens, poderá ser utilizada para formalização de informações, confirmações e ajustes relacionados à execução deste contrato, desde que seja possível comprovar sua autoria e conteúdo.</p>
+
+    <div class="section-title">CLÁUSULA DÉCIMA QUARTA — DO FORO</div>
+    <p class="clause">14.1. As partes elegem o foro da Comarca de Serra, Estado do Espírito Santo, para dirimir eventuais dúvidas ou controvérsias decorrentes deste contrato, ressalvadas as hipóteses em que a legislação aplicável determine foro diverso.</p>
+    <p class="clause" style="margin-top: 14px;">E, por estarem de acordo com todas as condições established neste instrumento, as partes declaram ter lido, compreendido e aceitado integralmente seus termos.</p>
 
     <div class="signatures-section">
-      <p style="text-align: center; margin-bottom: 30px; font-size: 9.5pt;">E, por estarem assim justos e contratados, assinam o presente contrato.</p>
+      <div class="date-location-stamp">
+        Serra/ES, {{DATA_ASSINATURA}}
+      </div>
       
       <div class="signatures-grid">
         <div class="signature-box">
           <div class="signature-line"></div>
-          <div class="signature-name">{{EMPRESA_NOME}}</div>
-          <div class="signature-role">CONTRATADA</div>
+          <div class="signature-name">DISTINTO ESTÚDIO DE FOTOGRAFIA & AUDIOVISUAL</div>
+          <div class="signature-role">{{EMPRESA_NOME}} — CONTRATADA</div>
         </div>
         <div class="signature-box">
           <div class="signature-line"></div>
-          <div class="signature-name">{{CLIENTE_NOME}}</div>
+          <div class="signature-name">THAÍSSA MOTA LEÃO MAGALHÃES</div>
+          <div class="signature-role">CONTRATANTE</div>
+        </div>
+        <div class="signature-box">
+          <div class="signature-line"></div>
+          <div class="signature-name">HAROLDO GABRIEL LOPES LUIZ</div>
           <div class="signature-role">CONTRATANTE</div>
         </div>
       </div>
     </div>
 
     <div class="footer-stamp">
-      Distinto • Documento emitido digitalmente via ERP Distinto
+      DISTINTO — ESTÚDIO DE FOTOGRAFIA & AUDIOVISUAL • Documento emitido digitalmente via ERP Distinto
     </div>
   </div>
 </body>
