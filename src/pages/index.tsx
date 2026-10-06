@@ -24,12 +24,32 @@ export default function Home() {
   const [erro, setErro] = useState('');
   const [mensagemSucesso, setMensagemSucesso] = useState('');
 
+  const changeTab = (tabName: string) => {
+    setActiveTab(tabName);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('erp_active_tab', tabName);
+      const url = new URL(window.location.href);
+      url.searchParams.set('tab', tabName);
+      window.history.replaceState({}, '', url.toString());
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
+      const urlTab = params.get('tab');
+      const savedTab = localStorage.getItem('erp_active_tab');
+      const targetTab = urlTab || savedTab;
+
+      if (targetTab) {
+        setActiveTab(targetTab);
+      }
+
       if (params.get('senha_redefinida') === '1') {
         setMensagemSucesso('Senha redefinida com sucesso. Entre com a nova senha.');
-        window.history.replaceState({}, '', window.location.pathname);
+        params.delete('senha_redefinida');
+        const newSearch = params.toString() ? `?${params.toString()}` : window.location.pathname;
+        window.history.replaceState({}, '', newSearch);
       }
     }
     fetch('/api/auth/me')
@@ -182,7 +202,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-[#050505] flex font-sans text-white">
-      <Sidebar user={user} activeTab={activeTab} setActiveTab={setActiveTab} onLogout={handleLogout} />
+      <Sidebar user={user} activeTab={activeTab} setActiveTab={changeTab} onLogout={handleLogout} />
       <div className="flex-1 flex flex-col min-w-0 bg-[#050505]">
         <TopNav user={user} title={activeTab.toUpperCase().replace('_', ' ')} />
         <main className="p-6 flex-1 overflow-y-auto bg-[#050505]">{renderActiveView()}</main>
