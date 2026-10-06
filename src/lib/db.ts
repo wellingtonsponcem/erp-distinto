@@ -82,6 +82,9 @@ export async function initTables() {
     try { await p.query(`ALTER TABLE configuracao_empresa ADD COLUMN asaas_api_key TEXT;`); } catch (e) {}
     try { await p.query(`ALTER TABLE configuracao_empresa ADD COLUMN asaas_mode VARCHAR(32) DEFAULT 'prod';`); } catch (e) {}
     try { await p.query(`ALTER TABLE configuracao_empresa ADD COLUMN asaas_webhook_token TEXT;`); } catch (e) {}
+    try { await p.query(`ALTER TABLE configuracao_empresa ADD COLUMN assinafy_api_key TEXT;`); } catch (e) {}
+    try { await p.query(`ALTER TABLE configuracao_empresa ADD COLUMN assinafy_account_id VARCHAR(100);`); } catch (e) {}
+    try { await p.query(`ALTER TABLE configuracao_empresa ADD COLUMN assinafy_mode VARCHAR(32) DEFAULT 'prod';`); } catch (e) {}
 
     // 4. Clientes
     await p.query(`
