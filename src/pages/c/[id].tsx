@@ -35,8 +35,60 @@ export default function PublicContractReviewPage({ contrato, erro }: PublicContr
     <>
       <Head>
         <title>REVISÃO: {contrato.titulo}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
         <meta name="robots" content="noindex, nofollow" />
+        <style>{`
+          @media screen and (max-width: 768px) {
+            body {
+              background-color: #ffffff !important;
+            }
+            main {
+              padding: 0 !important;
+            }
+            .contract-container {
+              width: 100% !important;
+              max-width: 100% !important;
+              min-height: auto !important;
+              margin: 0 !important;
+              padding: 16px 12px !important;
+              box-shadow: none !important;
+              border-radius: 0 !important;
+            }
+            .header {
+              flex-direction: column !important;
+              align-items: flex-start !important;
+              gap: 10px !important;
+            }
+            .contract-badge {
+              text-align: left !important;
+              width: 100% !important;
+            }
+            .brand-logo svg {
+              max-width: 130px !important;
+              height: auto !important;
+            }
+            .doc-title {
+              font-size: 11pt !important;
+              margin: 12px 0 4px 0 !important;
+            }
+            .doc-subtitle {
+              font-size: 9.5pt !important;
+              margin-bottom: 12px !important;
+            }
+            .section-title {
+              font-size: 8.5pt !important;
+              padding: 6px 8px !important;
+            }
+            .clause {
+              font-size: 9pt !important;
+              line-height: 1.5 !important;
+            }
+            .signatures-grid {
+              grid-template-columns: 1fr !important;
+              gap: 20px !important;
+            }
+          }
+        `}</style>
       </Head>
 
       <div className="min-h-screen bg-[#09090b] font-sans antialiased text-zinc-100 flex flex-col">
@@ -78,9 +130,9 @@ export default function PublicContractReviewPage({ contrato, erro }: PublicContr
         </div>
 
         {/* Container do Contrato (Iframe ou HTML Injetado com Estilo isolado) */}
-        <main className="flex-1 py-6 px-2 sm:px-4 bg-zinc-900/60 flex justify-center overflow-x-auto">
+        <main className="flex-1 py-0 sm:py-6 px-0 sm:px-4 bg-zinc-900/60 flex justify-center overflow-x-hidden">
           <div
-            className="w-full max-w-[850px] bg-white text-zinc-900 shadow-2xl rounded-sm overflow-hidden"
+            className="w-full max-w-[850px] bg-white text-zinc-900 shadow-2xl sm:rounded-sm overflow-hidden"
             dangerouslySetInnerHTML={{ __html: contrato.conteudo_html }}
           />
         </main>

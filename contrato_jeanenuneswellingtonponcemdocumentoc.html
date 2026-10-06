@@ -45,6 +45,49 @@
         border-radius: 0;
       }
     }
+    @media screen and (max-width: 768px) {
+      html, body {
+        background-color: #ffffff !important;
+      }
+      .contract-container {
+        width: 100% !important;
+        max-width: 100% !important;
+        min-height: auto !important;
+        margin: 0 !important;
+        padding: 16px 14px !important;
+        box-shadow: none !important;
+        border-radius: 0 !important;
+      }
+      .header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 12px !important;
+      }
+      .contract-badge {
+        text-align: left !important;
+        width: 100% !important;
+      }
+      .brand-logo svg {
+        max-width: 140px !important;
+        height: auto !important;
+      }
+      .doc-title {
+        font-size: 11pt !important;
+        margin: 14px 0 4px 0 !important;
+      }
+      .doc-subtitle {
+        font-size: 9.5pt !important;
+        margin-bottom: 14px !important;
+      }
+      .section-title {
+        font-size: 8.5pt !important;
+        padding: 6px 10px !important;
+      }
+      .signatures-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+      }
+    }
     .header {
       display: flex;
       justify-content: space-between;
