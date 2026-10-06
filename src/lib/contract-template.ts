@@ -46,11 +46,11 @@ export function renderMasterContractHtml(data: ContractRenderData): string {
     return `<div style="padding: 20px; font-family: sans-serif;"><h2>${data.titulo || 'Contrato'}</h2><p>Contratante: ${data.cliente_nome}</p><p>Valor: R$ ${(data.valor_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</p></div>`;
   }
 
-  const numContrato = data.numero_contrato || (data.id ? `2026/${data.id.substring(0, 6)}` : '2026/830b');
+  const numContrato = data.numero_contrato
+    || (data.id ? (data.id.startsWith('contrato_') ? `2026/${data.id.replace('contrato_', '').substring(0, 8).toUpperCase()}` : `2026/${data.id.substring(0, 6).toUpperCase()}`) : '2026/830B');
   const valorTotalNum = parseFloat(String(data.valor_total || 0));
   const valorTotalStr = `R$ ${valorTotalNum.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
 
-  // Retrocompatibilidade: se noivo/noiva existirem, popular os campos legados
   const clienteNome = data.cliente_nome
     || (data.noivo_nome && data.noiva_nome ? `${data.noivo_nome} & ${data.noiva_nome}` : data.noivo_nome || data.noiva_nome || 'CONTRATANTE');
   const clienteCpfCnpj = data.cliente_cpf_cnpj
@@ -68,12 +68,17 @@ export function renderMasterContractHtml(data: ContractRenderData): string {
   html = html.replace(/\{\{CLIENTE_EMAIL\}\}/g, clienteEmail);
   html = html.replace(/\{\{CLIENTE_TELEFONE\}\}/g, clienteTelefone);
   html = html.replace(/\{\{CLIENTE_ENDERECO\}\}/g, data.cliente_endereco || '');
+
+  html = html.replace(/\{\{CLIENTE_EMAIL_INFO\}\}/g, clienteEmail ? `, e-mail: ${clienteEmail}` : '');
+  html = html.replace(/\{\{CLIENTE_TELEFONE_INFO\}\}/g, clienteTelefone ? `, telefone: ${clienteTelefone}` : '');
+  html = html.replace(/\{\{CLIENTE_ENDERECO_INFO\}\}/g, data.cliente_endereco ? `, residente em: ${data.cliente_endereco}` : '');
+
   html = html.replace(/\{\{EMPRESA_NOME\}\}/g, data.empresa_nome || 'Distinto (69.250.713 JEANE NUNES DE PONCEM FAUSTINO)');
   html = html.replace(/\{\{EMPRESA_CNPJ\}\}/g, data.empresa_cnpj || '69.250.713/0001-00');
   html = html.replace(/\{\{EMPRESA_ENDERECO\}\}/g, data.empresa_endereco || 'Avenida Brasil, nº 17, Quadra 39, Novo Horizonte, Serra - ES, CEP 29163-331');
   html = html.replace(/\{\{EMPRESA_EMAIL\}\}/g, data.empresa_email || 'contato@wedistinto.com');
   html = html.replace(/\{\{VALOR_TOTAL\}\}/g, valorTotalStr);
-  html = html.replace(/\{\{CONDICOES_PAGAMENTO\}\}/g, data.condicoes_pagamento || 'Entrada de 20% + Saldo parcelado em até 6x (dependendo do pacote selecionado).');
+  html = html.replace(/\{\{CONDICOES_PAGAMENTO\}\}/g, data.condicoes_pagamento || 'Entrada de 20% + Saldo parcelado em até 6x.');
   html = html.replace(/\{\{TITULO_CONTRATO\}\}/g, data.titulo || 'Contrato de Prestação de Serviços');
   html = html.replace(/\{\{DATA_EVENTO\}\}/g, data.data_evento || 'a ser definida em comum acordo');
   html = html.replace(/\{\{LOCAL_EVENTO\}\}/g, data.local_evento || 'a ser definido em comum acordo');
@@ -88,31 +93,27 @@ export function renderMasterContractHtml(data: ContractRenderData): string {
   html = html.replace(/\{\{NOIVO_TELEFONE\}\}/g, data.noivo_telefone || '');
   html = html.replace(/\{\{NOIVA_TELEFONE\}\}/g, data.noiva_telefone || '');
 
-  // Caso seja o arquivo HTML base sem as tags {{TAG}}, substituir os blocos legado
-  if (html.includes('CASAMENTO N&deg; 2026/830b') || html.includes('CASAMENTO N° 2026/830b')) {
-    html = html.replace(/CASAMENTO N&deg; 2026\/830b|CASAMENTO N° 2026\/830b/g, `CASAMENTO N° ${numContrato}`);
+  // Se houver cláusulas personalizadas
+  if (data.clausulas_personalizadas) {
+    const sectionHtml = `
+      <div class="section-title">CLÁUSULA ADICIONAL — TERMOS E ESCOPO ESPECÍFICO</div>
+      <p class="clause" style="white-space: pre-line;">${data.clausulas_personalizadas}</p>
+    `;
+    html = html.replace(/\{\{CLAUSULAS_PERSONALIZADAS_SECTION\}\}/g, sectionHtml);
+    html = html.replace(/\{\{CLAUSULAS_PERSONALIZADAS\}\}/g, data.clausulas_personalizadas);
+  } else {
+    html = html.replace(/\{\{CLAUSULAS_PERSONALIZADAS_SECTION\}\}/g, '');
+    html = html.replace(/\{\{CLAUSULAS_PERSONALIZADAS\}\}/g, '');
   }
 
-  // Suporte a casal no bloco legado: se noivo e noiva existirem, formata como "NOIVO & NOIVA"
-  const contratanteDisplayNome = (data.noivo_nome && data.noiva_nome)
-    ? `${data.noivo_nome} & ${data.noiva_nome}`
-    : clienteNome;
-  const contratanteDisplayCpf = (data.noivo_cpf && data.noiva_cpf)
-    ? `${data.noivo_cpf} / ${data.noiva_cpf}`
-    : clienteCpfCnpj;
-  const contratanteBlock = `<span class="c16 c12 c11">${contratanteDisplayNome}</span>, <span class="c12 c11">portador(a) do CPF/CNPJ nº </span><span class="c73 c12">${contratanteDisplayCpf}</span>${clienteEmail ? `, e-mail <span class="c12 c11">${clienteEmail}</span>` : ''}, <span class="c12 c11">doravante denominado(a) simplesmente </span><span class="c16 c12 c11">CONTRATANTE</span>.`;
-  html = html.replace(
-    /<p class="c164"><span class="c16 c12 c11">Jeane Nunes,<\/span>[\s\S]*?<\/p>/,
-    `<p class="c164">${contratanteBlock}</p>`
-  );
-
-  const condicoesPagamentoStr = data.condicoes_pagamento || 'Entrada de 20% + Saldo parcelado em até 6x (dependendo do pacote selecionado).';
-  const clausulaValorBlock = `3.1. Pela prestação dos serviços contratados, os <span class="c24 c16 c12 c11">CONTRATANTES</span> pagarão à <span class="c24 c16 c12 c11">CONTRATADA</span> a quantia total de <span class="c24 c16 c127 c11">${valorTotalStr}</span>, nas seguintes condições: ${condicoesPagamentoStr}`;
-
-  html = html.replace(
-    /<p class="c75"><span class="c6 c11">3\.7\. Pela prestac;ao[\s\S]*?<\/p>/,
-    `<p class="c75"><span class="c6 c11">${clausulaValorBlock}</span></p>`
-  );
+  // Retrocompatibilidade se o template ainda contiver blocos antigos
+  if (html.includes('Jeane Nunes,') || html.includes('wemngton Poncem,')) {
+    const contratanteBlock = `<strong>${clienteNome}</strong>, portador(a) do CPF/CNPJ nº <strong>${clienteCpfCnpj}</strong>${clienteEmail ? `, e-mail ${clienteEmail}` : ''}, doravante denominado(a) simplesmente <strong>CONTRATANTE</strong>.`;
+    html = html.replace(
+      /<p class="c164">[\s\S]*?<\/p>/,
+      `<p class="c164">${contratanteBlock}</p>`
+    );
+  }
 
   return html;
 }
