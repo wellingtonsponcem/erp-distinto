@@ -42,7 +42,7 @@ export const EMPRESA_PADRAO = {
   nome: '69.250.713 JEANE NUNES DE PONCEM FAUSTINO',
   cnpj: '69.250.713/0001-00',
   endereco: 'Av. Brasil, nº 17, Quadra 39, Novo Horizonte, Serra/ES, CEP 29163-331',
-  email: 'hello@wedistinto.com',
+  email: 'ola@wedistinto.com',
 };
 
 function escapeHtml(v: string): string {

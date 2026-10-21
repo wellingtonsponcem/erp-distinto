@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { requireAuth } from '@/lib/helpers';
 import { query, queryOne } from '@/lib/db';
 import { generateId } from '@/lib/helpers';
+import { assinafyService } from '@/lib/assinafy';
 import { renderContractForRow, gerarNumeroContrato } from '@/lib/contract-template';
 
 export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, user) => {
@@ -192,6 +193,52 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
         await query('UPDATE contratos SET asaas_cobranca_gerada = 1 WHERE id = $1', [c.id]);
 
         return res.status(200).json({ ok: true, mensagem: `Cobrança de R$ ${valNum.toLocaleString('pt-BR')} gerada no financeiro (${totalParc}x)!` });
+      }
+
+      // AÇÃO: SINCRONIZAR ANDAMENTO DAS ASSINATURAS COM O ASSINAFY
+      // Sem id, sincroniza todos os contratos pendentes que têm documento no Assinafy
+      if (action === 'sincronizar_assinafy') {
+        const { id } = req.body;
+        const alvos = id
+          ? await query<any>('SELECT * FROM contratos WHERE id = $1 AND assinafy_document_id IS NOT NULL', [id])
+          : await query<any>("SELECT * FROM contratos WHERE assinafy_document_id IS NOT NULL AND status IN ('pendente', 'pendente_assinatura')");
+
+        const resultado: any[] = [];
+        for (const c of alvos) {
+          try {
+            const doc = await assinafyService.getDocument(c.assinafy_document_id);
+            const signers: any[] = doc.assignment?.signers || [];
+            if (signers.length === 0) continue;
+
+            let dadosC: any = {};
+            try {
+              dadosC = typeof c.dados_json === 'string' ? JSON.parse(c.dados_json) : (c.dados_json || {});
+            } catch (e) {}
+
+            dadosC.assinafy_assinaturas = {
+              total: signers.length,
+              assinadas: signers.filter((s) => s.completed).length,
+              signatarios: signers.map((s) => ({ nome: s.full_name, email: s.email, etapa: s.step, assinou: Boolean(s.completed) })),
+              status_documento: doc.status,
+              recusado_por: doc.declined_by || null,
+              atualizado_em: new Date().toISOString(),
+            };
+
+            // Todos assinaram: marca como assinado sem regenerar o texto (o UPDATE não toca em contrato_texto)
+            const todosAssinaram = dadosC.assinafy_assinaturas.assinadas === signers.length;
+            const novoStatus = todosAssinaram ? 'assinado' : c.status;
+
+            await query(
+              'UPDATE contratos SET status = $1, assinafy_status = $2, dados_json = $3 WHERE id = $4',
+              [novoStatus, doc.status, JSON.stringify(dadosC), c.id]
+            );
+            resultado.push({ id: c.id, status: novoStatus, assinafy_assinaturas: dadosC.assinafy_assinaturas });
+          } catch (e: any) {
+            resultado.push({ id: c.id, erro: e.message });
+          }
+        }
+
+        return res.status(200).json({ ok: true, contratos: resultado });
       }
 
       // AÇÃO 4: ENVIAR PARA ASSINATURA ELETRÔNICA

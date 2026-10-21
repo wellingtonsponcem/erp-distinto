@@ -40,6 +40,18 @@ export class AssinafyService {
       : 'https://sandbox.assinafy.com.br/v1';
   }
 
+  // Documento com o assignment e o andamento de cada signatário (signers[].completed)
+  public async getDocument(documentId: string): Promise<any> {
+    await this.getConfig();
+    if (!this.apiKey) throw new Error('Chave de API do Assinafy não configurada.');
+    const res = await fetch(`${this.getBaseUrl()}/documents/${encodeURIComponent(documentId)}`, {
+      headers: { 'X-Api-Key': this.apiKey, 'Accept': 'application/json' }
+    });
+    const body: any = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(`Assinafy retornou HTTP ${res.status} ao consultar o documento ${documentId}`);
+    return body.data ?? body;
+  }
+
   public async testConnection(apiKey?: string, accountId?: string, mode?: string): Promise<{ success: boolean; message: string; details?: any }> {
     if (!apiKey || !accountId) {
       await this.getConfig();
