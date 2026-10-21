@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { queryOne } from '@/lib/db';
-import { renderMasterContractHtml } from '@/lib/contract-template';
+import { renderContractForRow } from '@/lib/contract-template';
 import { requireAuth } from '@/lib/helpers';
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -37,27 +37,8 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const titulo = contrato.titulo || `Contrato - ${clienteNome}`;
     const valor = parseFloat(contrato.valor_total || contrato.valor || 0);
 
-    // Se o texto salvo não for o modelo master oficial (ou for o modelo simples antigo), forçar renderização com o modelo oficial
-    if (!dadosParsed.contrato_texto || dadosParsed.contrato_texto.includes('CONTRATO DE PRESTAÇÃO DE SERVIÇOS AUDIOVISUAIS')) {
-      dadosParsed.contrato_texto = renderMasterContractHtml({
-        id: contrato.id,
-        titulo,
-        cliente_nome: clienteNome,
-        cliente_cpf_cnpj: contrato.cliente_cpf_cnpj || dadosParsed.signatario_1?.cpf || '',
-        cliente_email: contrato.cliente_email || dadosParsed.signatario_1?.email || '',
-        cliente_telefone: contrato.cliente_telefone || dadosParsed.signatario_1?.telefone || '',
-        noivo_nome: dadosParsed.signatario_1?.nome || '',
-        noivo_cpf: dadosParsed.signatario_1?.cpf || '',
-        noivo_email: dadosParsed.signatario_1?.email || '',
-        noivo_telefone: dadosParsed.signatario_1?.telefone || '',
-        noiva_nome: dadosParsed.signatario_2?.nome || '',
-        noiva_cpf: dadosParsed.signatario_2?.cpf || '',
-        noiva_email: dadosParsed.signatario_2?.email || '',
-        noiva_telefone: dadosParsed.signatario_2?.telefone || '',
-        valor_total: valor,
-        condicoes_pagamento: dadosParsed.forma_pagamento,
-        clausulas_personalizadas: dadosParsed.clausulas
-      });
+    if (!dadosParsed.contrato_texto) {
+      dadosParsed.contrato_texto = await renderContractForRow(contrato, dadosParsed);
     }
 
     let htmlFinal = dadosParsed.contrato_texto || '';

@@ -2,7 +2,7 @@ import React from 'react';
 import Head from 'next/head';
 import { GetServerSideProps } from 'next';
 import { queryOne } from '@/lib/db';
-import { renderMasterContractHtml } from '@/lib/contract-template';
+import { renderContractForRow } from '@/lib/contract-template';
 
 interface PublicContractReviewProps {
   contrato: {
@@ -176,26 +176,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     let htmlFinal = dadosParsed.contrato_texto || '';
 
-    if (!htmlFinal || htmlFinal.includes('CONTRATO DE PRESTAÇÃO DE SERVIÇOS AUDIOVISUAIS')) {
-      htmlFinal = renderMasterContractHtml({
-        id: contratoDb.id,
-        titulo,
-        cliente_nome: clienteNome,
-        cliente_cpf_cnpj: contratoDb.cliente_cpf_cnpj || dadosParsed.signatario_1?.cpf || '',
-        cliente_email: contratoDb.cliente_email || dadosParsed.signatario_1?.email || '',
-        cliente_telefone: contratoDb.cliente_telefone || dadosParsed.signatario_1?.telefone || '',
-        noivo_nome: dadosParsed.signatario_1?.nome || '',
-        noivo_cpf: dadosParsed.signatario_1?.cpf || '',
-        noivo_email: dadosParsed.signatario_1?.email || '',
-        noivo_telefone: dadosParsed.signatario_1?.telefone || '',
-        noiva_nome: dadosParsed.signatario_2?.nome || '',
-        noiva_cpf: dadosParsed.signatario_2?.cpf || '',
-        noiva_email: dadosParsed.signatario_2?.email || '',
-        noiva_telefone: dadosParsed.signatario_2?.telefone || '',
-        valor_total: valor,
-        condicoes_pagamento: dadosParsed.forma_pagamento,
-        clausulas_personalizadas: dadosParsed.clausulas
-      });
+    if (!htmlFinal) {
+      htmlFinal = await renderContractForRow(contratoDb, dadosParsed);
     }
 
     // Sanitizar títulos na tag title/body se necessário

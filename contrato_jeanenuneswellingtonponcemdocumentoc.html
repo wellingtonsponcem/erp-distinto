@@ -322,14 +322,14 @@
     <div class="party-card">
       <div class="party-title">1.1. CONTRATANTES</div>
       <div class="party-body">
-        <strong>{{CLIENTE_NOME}}</strong>, portadores dos CPFs nº <strong>{{CLIENTE_CPF_CNPJ}}</strong>, respectivamente, com endereço de e-mail <strong>{{CLIENTE_EMAIL}}</strong> e telefone para contato <strong>{{CLIENTE_TELEFONE}}</strong>, doravante denominados, em conjunto, <strong>CONTRATANTES</strong>.
+        {{CONTRATANTES_QUALIFICACAO}}
       </div>
     </div>
 
     <div class="party-card">
       <div class="party-title">1.2. CONTRATADA</div>
       <div class="party-body">
-        <strong>DISTINTO ESTÚDIO DE FOTOGRAFIA & AUDIOVISUAL</strong>, razão social <strong>{{EMPRESA_NOME}}</strong>, inscrita no CNPJ sob o nº <strong>{{EMPRESA_CNPJ}}</strong>, com sede na <strong>{{EMPRESA_ENDERECO}}</strong>, e-mail <strong>{{EMPRESA_EMAIL}}</strong>, doravante denominada simplesmente <strong>CONTRATADA</strong>.
+        <strong>{{EMPRESA_NOME_FANTASIA}}</strong>, nome fantasia de <strong>{{EMPRESA_NOME}}</strong>, inscrita no CNPJ sob o nº <strong>{{EMPRESA_CNPJ}}</strong>, com sede na <strong>{{EMPRESA_ENDERECO}}</strong>, e-mail <strong>{{EMPRESA_EMAIL}}</strong>, doravante denominada simplesmente <strong>CONTRATADA</strong>.
       </div>
     </div>
 
@@ -348,7 +348,7 @@
 
     <div class="section-title">CLÁUSULA SEGUNDA — DA DATA, LOCAL E DURAÇÃO</div>
     <p class="clause">2.1. <strong>Data:</strong> o ensaio será realizado no dia <strong>{{DATA_EVENTO}}</strong>.</p>
-    <p class="clause">2.2. <strong>Local:</strong> o local do ensaio será definido em comum acordo entre as partes e deverá estar situado dentro dos limites da Grande Vitória/ES, compreendendo, para fins deste contrato, Vitória, Vila Velha, Serra, Cariacica, Viana, Fundão ou Guarapari.</p>
+    <p class="clause">2.2. <strong>Local:</strong> <strong>{{LOCAL_EVENTO}}</strong>. O ponto exato do ensaio será definido em comum acordo entre as partes e deverá estar situado dentro dos limites da Grande Vitória/ES, compreendendo, para fins deste contrato, Vitória, Vila Velha, Serra, Cariacica, Viana, Fundão ou Guarapari.</p>
     <p class="clause">2.3. O endereço definitivo do ensaio deverá ser informado e confirmado pelas partes com antecedência suficiente para organização da equipe e logística.</p>
     <p class="clause">2.4. Caso os CONTRATANTES optem por realizar o ensaio em local situado fora da área prevista no item 2.2, poderão ser cobrados valores adicionais referentes a deslocamento, combustível, estacionamento, pedágios, transporte, hospedagem ou outras despesas necessárias à execução do serviço.</p>
     <p class="clause">2.5. Eventuais despesas adicionais deverão ser previamente informadas e aprovadas pelos CONTRATANTES.</p>
@@ -367,8 +367,7 @@
     <p class="clause">4.1. Pela prestação dos serviços descritos neste contrato, os CONTRATANTES pagarão à CONTRATADA o valor total de <strong>{{VALOR_TOTAL}}</strong>.</p>
     <div class="highlight-box">
       <strong>4.2. O pagamento será realizado da seguinte forma:</strong><br>
-      a) <strong>Reserva de data:</strong> R$ 150,00 (cento e cinquenta reais), pagos no ato da contratação;<br>
-      b) <strong>Saldo:</strong> R$ 150,00 (cento e cinquenta reais), pagos até o momento da entrega das fotografias finais.
+      {{CONDICOES_PAGAMENTO}}
     </div>
     <p class="clause">4.3. A reserva da data somente será considerada efetivada após a confirmação do pagamento do valor previsto na alínea “a” do item 4.2.</p>
     <p class="clause">4.4. A data reservada é vinculada aos CONTRATANTES e implica bloqueio de agenda da CONTRATADA, podendo impedir a contratação de outros trabalhos para o mesmo período.</p>
@@ -394,7 +393,7 @@
     <p class="clause">7.1. A CONTRATADA manterá uma cópia de segurança dos arquivos finais pelo prazo de 90 (noventa) dias, contados a partir da data da entrega final.</p>
     <p class="clause">7.2. Após o término desse prazo, a CONTRATADA poderá excluir definitivamente os arquivos, não permanecendo obrigada à sua guarda ou recuperação.</p>
     <p class="clause">7.3. Recomenda-se aos CONTRATANTES que realizem o download e mantenham cópias de segurança das fotografias recebidas em mais de um dispositivo ou serviço de armazenamento.</p>
-    <p class="clause">7.4. A CONTRATADA não se responsabilizará pela perda dos arquivos após o prazo established no item 7.1.</p>
+    <p class="clause">7.4. A CONTRATADA não se responsabilizará pela perda dos arquivos após o prazo estabelecido no item 7.1.</p>
 
     <div class="section-title">CLÁUSULA OITAVA — DA RESPONSABILIDADE DOS CONTRATANTES</div>
     <p class="clause">8.1. Os CONTRATANTES são responsáveis por fornecer corretamente todas as informações necessárias à execução do serviço, incluindo endereço, horário, referências do local e demais informações previamente solicitadas.</p>
@@ -431,9 +430,11 @@
     <p class="clause">13.4. Este contrato representa o acordo entre as partes quanto ao serviço nele descrito, substituindo eventuais entendimentos anteriores que sejam incompatíveis com suas disposições.</p>
     <p class="clause">13.5. A comunicação realizada por meios eletrônicos, incluindo e-mail e aplicativos de mensagens, poderá ser utilizada para formalização de informações, confirmações e ajustes relacionados à execução deste contrato, desde que seja possível comprovar sua autoria e conteúdo.</p>
 
+    {{CLAUSULAS_PERSONALIZADAS_SECTION}}
+
     <div class="section-title">CLÁUSULA DÉCIMA QUARTA — DO FORO</div>
     <p class="clause">14.1. As partes elegem o foro da Comarca de Serra, Estado do Espírito Santo, para dirimir eventuais dúvidas ou controvérsias decorrentes deste contrato, ressalvadas as hipóteses em que a legislação aplicável determine foro diverso.</p>
-    <p class="clause" style="margin-top: 14px;">E, por estarem de acordo com todas as condições established neste instrumento, as partes declaram ter lido, compreendido e aceitado integralmente seus termos.</p>
+    <p class="clause" style="margin-top: 14px;">E, por estarem de acordo com todas as condições estabelecidas neste instrumento, as partes declaram ter lido, compreendido e aceitado integralmente seus termos.</p>
 
     <div class="signatures-section">
       <div class="date-location-stamp">
@@ -443,19 +444,10 @@
       <div class="signatures-grid">
         <div class="signature-box">
           <div class="signature-line"></div>
-          <div class="signature-name">DISTINTO ESTÚDIO DE FOTOGRAFIA & AUDIOVISUAL</div>
+          <div class="signature-name">{{EMPRESA_NOME_FANTASIA}}</div>
           <div class="signature-role">{{EMPRESA_NOME}} — CONTRATADA</div>
         </div>
-        <div class="signature-box">
-          <div class="signature-line"></div>
-          <div class="signature-name">THAÍSSA MOTA LEÃO MAGALHÃES</div>
-          <div class="signature-role">CONTRATANTE</div>
-        </div>
-        <div class="signature-box">
-          <div class="signature-line"></div>
-          <div class="signature-name">HAROLDO GABRIEL LOPES LUIZ</div>
-          <div class="signature-role">CONTRATANTE</div>
-        </div>
+        {{ASSINATURAS_CONTRATANTES}}
       </div>
     </div>
 
