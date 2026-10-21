@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { requireAuth } from '@/lib/helpers';
 import { query, queryOne } from '@/lib/db';
 import { generateId } from '@/lib/helpers';
-import { renderMasterContractHtml } from '@/lib/contract-template';
+import { renderContractForRow, gerarNumeroContrato } from '@/lib/contract-template';
 
 export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, user) => {
   const method = req.method;
@@ -30,25 +30,7 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
         const valTotalNum = parseFloat(r.valor_total || r.valor || 0);
 
         if (!dadosParsed.contrato_texto) {
-          dadosParsed.contrato_texto = renderMasterContractHtml({
-            id: r.id,
-            titulo: r.titulo,
-            cliente_nome: clienteNome,
-            cliente_cpf_cnpj: r.cliente_cpf_cnpj || dadosParsed.signatario_1?.cpf || '',
-            cliente_email: r.cliente_email || dadosParsed.signatario_1?.email || '',
-            cliente_telefone: r.cliente_telefone || dadosParsed.signatario_1?.telefone || '',
-            noivo_nome: dadosParsed.signatario_1?.nome || '',
-            noivo_cpf: dadosParsed.signatario_1?.cpf || '',
-            noivo_email: dadosParsed.signatario_1?.email || '',
-            noivo_telefone: dadosParsed.signatario_1?.telefone || '',
-            noiva_nome: dadosParsed.signatario_2?.nome || '',
-            noiva_cpf: dadosParsed.signatario_2?.cpf || '',
-            noiva_email: dadosParsed.signatario_2?.email || '',
-            noiva_telefone: dadosParsed.signatario_2?.telefone || '',
-            valor_total: valTotalNum,
-            condicoes_pagamento: dadosParsed.forma_pagamento,
-            clausulas_personalizadas: dadosParsed.clausulas
-          });
+          dadosParsed.contrato_texto = await renderContractForRow(r, dadosParsed);
         }
 
         return res.status(200).json({
@@ -139,6 +121,14 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
         const novoId = generateId();
         const novoTitulo = `${original.titulo || 'Contrato'} - Cópia`;
 
+        let dadosCopia: any = {};
+        try {
+          dadosCopia = typeof original.dados_json === 'string' ? JSON.parse(original.dados_json) : (original.dados_json || {});
+        } catch (e) {}
+        delete dadosCopia.contrato_texto;
+        dadosCopia.numero_contrato = gerarNumeroContrato();
+        dadosCopia.contrato_texto = await renderContractForRow({ ...original, id: novoId, titulo: novoTitulo, criado_em: new Date() }, dadosCopia);
+
         await query(
           `INSERT INTO contratos (
             id, proposta_id, cliente_id, titulo, cliente_nome, cliente_cpf_cnpj, cliente_email, cliente_telefone, valor_total, status, dados_json
@@ -153,7 +143,7 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
             original.cliente_email || '',
             original.cliente_telefone || '',
             original.valor_total || 0,
-            original.dados_json || '{}'
+            JSON.stringify(dadosCopia)
           ]
         );
 
@@ -250,26 +240,9 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
       const titleFinal = titulo || `Contrato de Prestação de Serviços - ${cliente_nome || 'Cliente'}`;
 
       let dadosObj = typeof dados === 'object' ? { ...dados } : {};
+      if (!dadosObj.numero_contrato) dadosObj.numero_contrato = gerarNumeroContrato();
       if (!dadosObj.contrato_texto) {
-        dadosObj.contrato_texto = renderMasterContractHtml({
-          id,
-          titulo: titleFinal,
-          cliente_nome: cliente_nome || 'Cliente Contratante',
-          cliente_cpf_cnpj,
-          cliente_email,
-          cliente_telefone,
-          noivo_nome: dadosObj.signatario_1?.nome || '',
-          noivo_cpf: dadosObj.signatario_1?.cpf || '',
-          noivo_email: dadosObj.signatario_1?.email || '',
-          noivo_telefone: dadosObj.signatario_1?.telefone || '',
-          noiva_nome: dadosObj.signatario_2?.nome || '',
-          noiva_cpf: dadosObj.signatario_2?.cpf || '',
-          noiva_email: dadosObj.signatario_2?.email || '',
-          noiva_telefone: dadosObj.signatario_2?.telefone || '',
-          valor_total: valNum,
-          condicoes_pagamento: dadosObj.forma_pagamento,
-          clausulas_personalizadas: dadosObj.clausulas
-        });
+        dadosObj.contrato_texto = await renderContractForRow({ id, titulo: titleFinal, cliente_nome: cliente_nome || 'Cliente Contratante', cliente_cpf_cnpj, cliente_email, cliente_telefone, valor_total: valNum }, dadosObj);
       }
 
       const dadosJson = JSON.stringify(dadosObj);
@@ -339,28 +312,25 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
 
       if (!id) return res.status(422).json({ erro: 'ID do contrato é obrigatório' });
 
+      const atual = await queryOne<any>('SELECT * FROM contratos WHERE id = $1 LIMIT 1', [id]);
+      if (!atual) return res.status(404).json({ erro: 'Contrato não encontrado' });
+
+      let dadosAtuais: any = {};
+      try {
+        dadosAtuais = typeof atual.dados_json === 'string' ? JSON.parse(atual.dados_json) : (atual.dados_json || {});
+      } catch (e) {}
+
       const valNum = parseFloat(valor_total || 0);
-      let dadosObj = typeof dados === 'object' ? { ...dados } : {};
-      if (!dadosObj.contrato_texto) {
-        dadosObj.contrato_texto = renderMasterContractHtml({
-          id,
-          titulo,
-          cliente_nome,
-          cliente_cpf_cnpj,
-          cliente_email,
-          cliente_telefone,
-          noivo_nome: dadosObj.signatario_1?.nome || '',
-          noivo_cpf: dadosObj.signatario_1?.cpf || '',
-          noivo_email: dadosObj.signatario_1?.email || '',
-          noivo_telefone: dadosObj.signatario_1?.telefone || '',
-          noiva_nome: dadosObj.signatario_2?.nome || '',
-          noiva_cpf: dadosObj.signatario_2?.cpf || '',
-          noiva_email: dadosObj.signatario_2?.email || '',
-          noiva_telefone: dadosObj.signatario_2?.telefone || '',
-          valor_total: valNum,
-          condicoes_pagamento: dadosObj.forma_pagamento,
-          clausulas_personalizadas: dadosObj.clausulas
-        });
+      const statusFinal = status || atual.status || 'rascunho';
+
+      // Mescla com o que já está salvo: campos que a tela não envia (número, data, local, endereço, modelo...) não se perdem
+      const { contrato_texto: _textoRecebido, ...dadosRecebidos } = typeof dados === 'object' && dados ? dados : ({} as any);
+      const dadosObj: any = { ...dadosAtuais, ...dadosRecebidos };
+
+      // Contrato assinado (ou sendo marcado como assinado) mantém exatamente o texto que foi assinado
+      const congelado = (atual.status === 'assinado' || statusFinal === 'assinado') && dadosAtuais.contrato_texto;
+      if (!congelado) {
+        dadosObj.contrato_texto = await renderContractForRow({ id, titulo, cliente_nome, cliente_cpf_cnpj, cliente_email, cliente_telefone, valor_total: valNum, criado_em: atual.criado_em }, dadosObj);
       }
 
       const dadosJson = JSON.stringify(dadosObj);
@@ -385,7 +355,7 @@ export default requireAuth(async (req: NextApiRequest, res: NextApiResponse, use
           cliente_email || '',
           cliente_telefone || '',
           valNum,
-          status,
+          statusFinal,
           dadosJson,
           assinafy_document_id || null,
           assinafy_status || null,

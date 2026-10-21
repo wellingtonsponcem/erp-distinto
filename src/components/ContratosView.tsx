@@ -37,7 +37,12 @@ const [titulo, setTitulo] = useState('');
   const [valorTotal, setValorTotal] = useState('');
   const [status, setStatus] = useState('rascunho');
   const [clausulas, setClausulas] = useState('');
-  const [formaPagamento, setFormaPagamento] = useState('PIX / Boleto / Cartão de Crédito');
+  const [formaPagamento, setFormaPagamento] = useState('');
+  const [modeloId, setModeloId] = useState('');
+  const [dataEvento, setDataEvento] = useState('');
+  const [localEvento, setLocalEvento] = useState('');
+  const [clienteEndereco, setClienteEndereco] = useState('');
+  const [modelos, setModelos] = useState<any[]>([]);
   const [salvando, setSalvando] = useState(false);
 
   // Noivos / Casal
@@ -70,10 +75,13 @@ const [titulo, setTitulo] = useState('');
 
   const carregarDados = async () => {
     setLoading(true);
-    const [resContratos, resPropostas] = await Promise.all([
+    const [resContratos, resPropostas, resModelos] = await Promise.all([
       safeFetchJson('/api/comercial/contratos'),
       safeFetchJson('/api/comercial/propostas'),
+      safeFetchJson('/api/comercial/modelos-contrato'),
     ]);
+
+    setModelos(resModelos.ok && Array.isArray(resModelos.data) ? resModelos.data : []);
 
     if (resContratos.ok && Array.isArray(resContratos.data)) {
       setContratos(resContratos.data);
@@ -105,11 +113,6 @@ const [titulo, setTitulo] = useState('');
       setClienteNome(prop.cliente_nome || prop.cliente || '');
       setNoivoNome(prop.cliente_nome || prop.cliente || '');
       setValorTotal(String(valProp));
-      setClausulas(
-        `CLÁUSULA 1ª - DO OBJETO: Prestação de serviços de ${prop.tipo?.toUpperCase() || 'PRODUÇÃO AUDIOVISUAL'} conforme proposta "${prop.titulo}".\n\n` +
-        `CLÁUSULA 2ª - DOS DIREITOS AUTORAIS E USO DE IMAGEM: A CONTRATADA reserva os direitos autorais com cessão de uso das imagens ao CONTRATANTE.\n\n` +
-        `CLÁUSULA 3ª - DA RESCISÃO: O cancelamento sem justa causa com menos de 30 dias do evento acarretará em multa rescisória de 20% do valor total.`
-      );
     }
   };
 
@@ -138,6 +141,10 @@ const [titulo, setTitulo] = useState('');
           dados: {
             clausulas,
             forma_pagamento: formaPagamento,
+            modelo_id: modeloId,
+            data_evento: dataEvento,
+            local_evento: localEvento,
+            cliente_endereco: clienteEndereco,
             signatario_1: {
               nome: noivoNome || clienteNome,
               cpf: noivoCpf || clienteCpfCnpj,
@@ -180,6 +187,11 @@ const [titulo, setTitulo] = useState('');
     setValorTotal('');
     setStatus('rascunho');
     setClausulas('');
+    setFormaPagamento('');
+    setModeloId('');
+    setDataEvento('');
+    setLocalEvento('');
+    setClienteEndereco('');
     setNoivoNome('');
     setNoivoCpf('');
     setNoivoEmail('');
@@ -202,7 +214,11 @@ const [titulo, setTitulo] = useState('');
     setValorTotal(String(c.valor_total || '0'));
     setStatus(c.status || 'rascunho');
     setClausulas(c.dados?.clausulas || '');
-    setFormaPagamento(c.dados?.forma_pagamento || 'PIX / Boleto / Cartão de Crédito');
+    setFormaPagamento(c.dados?.forma_pagamento || '');
+    setModeloId(c.dados?.modelo_id || '');
+    setDataEvento(c.dados?.data_evento || '');
+    setLocalEvento(c.dados?.local_evento || '');
+    setClienteEndereco(c.dados?.cliente_endereco || '');
     setNoivoNome(c.dados?.signatario_1?.nome || c.cliente_nome || '');
     setNoivoCpf(c.dados?.signatario_1?.cpf || c.cliente_cpf_cnpj || '');
     setNoivoEmail(c.dados?.signatario_1?.email || c.cliente_email || '');
@@ -952,14 +968,58 @@ const [titulo, setTitulo] = useState('');
                 </div>
               </div>
 
+              {(status === 'assinado' && contratoEditandoId) && (
+                <p className="text-[11px] text-amber-700 bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">
+                  Contrato assinado: o texto do documento não é alterado ao salvar. Só os dados cadastrais são atualizados.
+                </p>
+              )}
+
               <div>
-                <label className="block text-[10px] font-bold uppercase text-gray-600 mb-1">Cláusulas e Objeto do Contrato</label>
+                <label className="block text-[10px] font-bold uppercase text-gray-600 mb-1">Modelo de Contrato</label>
+                <select value={modeloId} onChange={(e) => setModeloId(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs text-gray-900 focus:ring-2 focus:ring-black outline-none bg-white">
+                  <option value="">Modelo padrão</option>
+                  {modelos.map((m) => (
+                    <option key={m.id} value={m.id}>{m.nome}{Number(m.padrao) === 1 ? ' (padrão)' : ''}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-gray-600 mb-1">Data do Evento / Ensaio</label>
+                  <input value={dataEvento} onChange={(e) => setDataEvento(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs text-gray-900 focus:ring-2 focus:ring-black outline-none" placeholder="14/11/2026" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold uppercase text-gray-600 mb-1">Local</label>
+                  <input value={localEvento} onChange={(e) => setLocalEvento(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs text-gray-900 focus:ring-2 focus:ring-black outline-none" placeholder="Praia, igreja, salão..." />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase text-gray-600 mb-1">Endereço dos Contratantes</label>
+                <input value={clienteEndereco} onChange={(e) => setClienteEndereco(e.target.value)} className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs text-gray-900 focus:ring-2 focus:ring-black outline-none" placeholder="Rua, nº, complemento, bairro, cidade/UF" />
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase text-gray-600 mb-1">Condições de Pagamento</label>
+                <textarea
+                  rows={2}
+                  value={formaPagamento}
+                  onChange={(e) => setFormaPagamento(e.target.value)}
+                  className="w-full px-3 py-2 border border-gray-200 rounded-xl text-xs text-gray-900 focus:ring-2 focus:ring-black outline-none leading-relaxed"
+                  placeholder="Reserva de data: R$ 150,00 no ato da contratação + Saldo: R$ 150,00 na entrega das fotos"
+                />
+                <p className="text-[10px] text-gray-500 mt-1">Separe as parcelas com " + ". Cada uma vira um item a), b), c) no contrato.</p>
+              </div>
+
+              <div>
+                <label className="block text-[10px] font-bold uppercase text-gray-600 mb-1">Cláusulas Adicionais (opcional)</label>
                 <textarea
                   rows={6}
                   value={clausulas}
                   onChange={(e) => setClausulas(e.target.value)}
                   className="w-full p-3 border border-gray-200 rounded-xl text-xs text-gray-900 focus:ring-2 focus:ring-black outline-none leading-relaxed font-mono"
-                  placeholder="Escreva os termos, obrigações e cláusulas do contrato comercial..."
+                  placeholder="Só o que for específico deste cliente. Entra como Cláusula Adicional antes do foro."
                 />
               </div>
 
