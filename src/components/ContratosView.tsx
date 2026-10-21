@@ -96,6 +96,25 @@ const [titulo, setTitulo] = useState('');
     }
 
     setLoading(false);
+
+    // Atualiza o andamento das assinaturas no Assinafy em segundo plano, sem travar a lista
+    const temPendenteNoAssinafy = (resContratos.data || []).some?.((c: any) =>
+      c.assinafy_document_id && ['pendente', 'pendente_assinatura'].includes((c.status || '').toLowerCase())
+    );
+    if (temPendenteNoAssinafy) {
+      const sync = await safeFetchJson('/api/comercial/contratos', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ action: 'sincronizar_assinafy' }),
+      });
+      const atualizados: any[] = sync.ok && Array.isArray(sync.data?.contratos) ? sync.data.contratos : [];
+      if (atualizados.length > 0) {
+        setContratos((prev) => prev.map((c) => {
+          const u = atualizados.find((x) => x.id === c.id && !x.erro);
+          return u ? { ...c, status: u.status, dados: { ...(c.dados || {}), assinafy_assinaturas: u.assinafy_assinaturas } } : c;
+        }));
+      }
+    }
   };
 
   useEffect(() => {
@@ -349,9 +368,13 @@ const [titulo, setTitulo] = useState('');
     }
   };
 
-  const handleAbrirPdfModal = (c: any) => {
+  const handleAbrirPdfModal = async (c: any) => {
     setContratoPdf(c);
     setModalPdfAberta(true);
+    const res = await safeFetchJson(`/api/comercial/contratos?id=${encodeURIComponent(c.id)}`);
+    if (res.ok && res.data?.dados?.contrato_texto) {
+      setContratoPdf((prev: any) => (prev && prev.id === c.id ? { ...prev, dados: { ...(prev.dados || {}), contrato_texto: res.data.dados.contrato_texto } } : prev));
+    }
   };
 
   const handleAbrirShareModal = (c: any) => {
@@ -594,13 +617,25 @@ const [titulo, setTitulo] = useState('');
                       <td className="py-3.5 px-4 text-center font-mono text-gray-500 text-xs">
                         {dtStr ? new Date(dtStr).toLocaleDateString('pt-BR') : '—'}
                       </td>
-                      <td className="py-3.5 px-4 text-right font-mono font-bold text-xs text-gray-900">
+                      <td className="py-3.5 px-4 text-right font-mono font-bold text-xs text-white">
                         R$ {val.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}
                       </td>
                       <td className="py-3.5 px-4 text-center">
                         <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold ${badgeBg}`}>
                           {statusTxt}
                         </span>
+                        {c.dados?.assinafy_assinaturas?.total > 0 && (
+                          <span
+                            className="block mt-1 text-[10px] text-zinc-400 font-medium"
+                            title={(c.dados.assinafy_assinaturas.signatarios || [])
+                              .map((s: any) => `${s.assinou ? '✓' : '○'} ${s.nome}`)
+                              .join('\n')}
+                          >
+                            {c.dados.assinafy_assinaturas.recusado_por
+                              ? 'Assinatura recusada'
+                              : `${c.dados.assinafy_assinaturas.assinadas} de ${c.dados.assinafy_assinaturas.total} assinaturas`}
+                          </span>
+                        )}
                       </td>
                       <td className="py-3.5 px-4 text-right">
                         <div className="flex items-center justify-end space-x-1">
@@ -1153,56 +1188,14 @@ const [titulo, setTitulo] = useState('');
             {/* Documento Formatado / HTML Completo */}
             <div className="flex-1 overflow-y-auto p-4 border rounded-xl bg-gray-50">
               {contratoPdf.dados?.contrato_texto ? (
-                <div
-                  className="bg-white p-6 rounded-lg shadow-xs leading-relaxed text-xs text-gray-900 font-sans"
-                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(contratoPdf.dados.contrato_texto) }}
+                <iframe
+                  title="Prévia do contrato"
+                  srcDoc={DOMPurify.sanitize(contratoPdf.dados.contrato_texto, { WHOLE_DOCUMENT: true, ADD_TAGS: ['style'] })}
+                  sandbox=""
+                  className="w-full h-[65vh] bg-white rounded-lg border-0"
                 />
               ) : (
-                <div className="space-y-6 text-xs text-gray-800 leading-relaxed font-sans bg-white p-6 rounded-lg shadow-xs">
-                  <div className="text-center space-y-1 border-b pb-4">
-                    <h2 className="font-black text-base uppercase tracking-tight text-gray-900">CONTRATO DE PRESTAÇÃO DE SERVIÇOS</h2>
-                    <p className="text-[11px] text-gray-500 font-mono">ERP DISTINTO • PONCEM STUDIO LTDA</p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p>
-                      <strong>CONTRATADA:</strong> PONCEM STUDIO LTDA, empresa especializada em produção audiovisual e gestão de imagem.
-                    </p>
-                    <p>
-                      <strong>CONTRATANTE:</strong> {contratoPdf.cliente_nome}
-                      {contratoPdf.cliente_cpf_cnpj ? `, inscrito(a) no CPF/CNPJ sob o nº ${contratoPdf.cliente_cpf_cnpj}` : ''}
-                      {contratoPdf.cliente_email ? `, e-mail: ${contratoPdf.cliente_email}` : ''}.
-                    </p>
-                  </div>
-
-                  <div className="space-y-2">
-                    <h4 className="font-bold text-gray-900 uppercase">VALOR E CONDIÇÕES DE PAGAMENTO</h4>
-                    <p>
-                      O valor total do presente contrato é de <strong>R$ {parseFloat(contratoPdf.valor_total || 0).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>, 
-                      referente ao escopo acordado.
-                    </p>
-                  </div>
-
-                  {contratoPdf.dados?.clausulas && (
-                    <div className="space-y-2 pt-2 border-t border-gray-200">
-                      <h4 className="font-bold text-gray-900 uppercase">CLÁUSULAS E TERMOS</h4>
-                      <div className="whitespace-pre-line leading-relaxed text-gray-700">
-                        {contratoPdf.dados.clausulas}
-                      </div>
-                    </div>
-                  )}
-
-                  <div className="pt-8 grid grid-cols-2 gap-8 text-center border-t border-gray-200 mt-8">
-                    <div>
-                      <div className="border-t border-gray-400 pt-2 font-bold">PONCEM STUDIO LTDA</div>
-                      <span className="text-[10px] text-gray-400">CONTRATADA</span>
-                    </div>
-                    <div>
-                      <div className="border-t border-gray-400 pt-2 font-bold">{contratoPdf.cliente_nome}</div>
-                      <span className="text-[10px] text-gray-400">CONTRATANTE</span>
-                    </div>
-                  </div>
-                </div>
+                <div className="py-16 text-center text-xs text-gray-500">Carregando contrato...</div>
               )}
             </div>
           </div>
